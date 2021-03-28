@@ -1,6 +1,6 @@
 """The Neerslag Sensor (Buienalarm / Buienradar) integration."""
 import asyncio
-from homeassistant.components.neerslag.load_frontend import setup_view
+from .load_frontend import setup_view
 import logging
 
 from homeassistant.config_entries import ConfigEntry
