@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Use location (latitude/longitude) of Home Assistant, overrides all other location settings",
+                    "buienalarm": "Enable Buienalarm",
+                    "buienalarmLatitude": "Latitude",
+                    "buienalarmLongitude": "Longitude",
+                    "buienradar": "Enable Buienradar",
+                    "buienradarLatitude": "Latitude",
+                    "buienradarLongitude": "Longitude",
+                    "host": "Host",
+                    "password": "Password",
+                    "username": "Username"
+                },
+                "description": "Set-up of Buienalarm and/or Buienradar sensor. This is used by the Neerslag Card",
+                "title": "Set-up the Neerslag Sensor"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Use location (latitude/longitude) of Home Assistant, overrides all other location settings",
+                    "buienalarm": "Enable Buienalarm",
+                    "buienalarmLatitude": "Latitude",
+                    "buienalarmLongitude": "Longitude",
+                    "buienradar": "Enable Buienradar",
+                    "buienradarLatitude": "Latitude",
+                    "buienradarLongitude": "Longitude",
+                    "host": "Host",
+                    "password": "Password",
+                    "username": "Username"
+                },
+                "description": "Manage of Buienalarm and/or Buienradar sensor. This is used by the Neerslag Card",
+                "title": "Manage Neerslag"
+            }
+        }
+    },
+    "title": "Neerslag (Buienalarm / Buienradar)"
+}

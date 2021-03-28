@@ -1,0 +1,16 @@
+{
+  "domain": "neerslag",
+  "name": "Neerslag (Buienalarm / Buienradar)",
+  "config_flow": true,
+  "documentation": "https://github.com/aex351/home-assistant-neerslag-app",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": ["http"],
+  "issue_tracker": "https://github.com/aex351/home-assistant-neerslag-app/issues",
+  "codeowners": [
+    "@aex351"
+  ],
+  "version": "2021.03.28.0"
+}

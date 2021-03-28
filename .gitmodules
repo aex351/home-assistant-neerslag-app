@@ -1,0 +1,3 @@
+[submodule "home-assistant-neerslag-card"]
+	path = custom_components/home-assistant-neerslag-card
+	url = https://github.com/aex351/home-assistant-neerslag-card.git
