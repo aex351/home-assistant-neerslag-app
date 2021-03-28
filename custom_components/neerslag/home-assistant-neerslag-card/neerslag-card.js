@@ -1,6 +1,10 @@
-const LitElement = customElements.get("hui-masonry-view") ? Object.getPrototypeOf(customElements.get("hui-masonry-view")) : Object.getPrototypeOf(customElements.get("hui-view"));
-const html = LitElement.prototype.html;
-const css = LitElement.prototype.css;
+export const LitElement = customElements.get("home-assistant-main")
+  ? Object.getPrototypeOf(customElements.get("home-assistant-main"))
+  : Object.getPrototypeOf(customElements.get("hui-view"));
+
+export const html = LitElement.prototype.html;
+
+export const css = LitElement.prototype.css;
 
 // class CombiCardEditor extends LitElement {
 
