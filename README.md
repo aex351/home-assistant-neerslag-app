@@ -27,10 +27,7 @@ This is the recommended option and also allows for easy updates.
 
 For updates go to the Community Store (HACS) and click update
 
-## 2 Configure the Neerslag App (via interface)
-The Neerslag App is fully configurable via the interface. Go to `config/integrations` and click on options. Select which sensor you want to use and provide the location data. There is an option to use the built-in Home Assistant location data. If this checkbox is selected, it will override the location settings of the individual sensors.
-
-## 3b. Manual install
+## 1b. Manual install
 Not recommended, you will need to track updates manually by browsing to the repository;
 1) Download the latest release of the Neerslag App from this repository;
 2) In Home Assistant, create a folder `config/custom_components`;
@@ -39,8 +36,11 @@ Not recommended, you will need to track updates manually by browsing to the repo
 5) Add the Neerslag App as an Integration in Home Assistant (config/integration).
 
 For updates, repeat step 1 to 4. Home Assistant will not delete any configuration.
+## 2. Configure the Neerslag App (via interface)
+The Neerslag App is fully configurable via the interface. Go to `config/integrations` and click on options. Select which sensor you want to use and provide the location data. There is an option to use the built-in Home Assistant location data. If this checkbox is selected, it will override the location settings of the individual sensors.
 
-## 3b. Add the Neerslag Card to your Dashboard
+
+## 3. Add the Neerslag Card to your Dashboard
 1) Go to your dashboard, go to configure, and click `add card`
 2) Find the Neerslag Card in the list of cards
 3) Add the card and configure the card.
