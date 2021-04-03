@@ -443,6 +443,11 @@ class CombiCard extends LitElement {
 	//beide zijn objecten dus wanneer deze worden aangepast, dan wijzigt het ook meteen
 	combineTwoArray(array1, array2) {
 
+		// fix - if only 1 entity is used
+		if(!array1 || !array2) {
+			return;
+		}
+
 		//console.log(array1[0])
 		//console.log(array2[0])
 
