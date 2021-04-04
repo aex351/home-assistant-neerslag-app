@@ -9,7 +9,7 @@ import random as rand
 
 import json
 from homeassistant.helpers.entity import Entity
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
+from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SOURCE
 from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -328,12 +328,16 @@ class NeerslagSensorBuienradar(mijnBasis):
         # return data
         timeout = aiohttp.ClientTimeout(total=5)
         async with aiohttp.ClientSession() as session:
-            url = 'https://gpsgadget.buienradar.nl/data/raintext?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
+
+            # https://www.buienradar.nl/overbuienradar/gratis-weerdata
+            url = 'https://gps.buienradar.nl/getrr.php?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
+            #url = 'https://gpsgadget.buienradar.nl/data/raintext?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
+            _LOGGER.info(url)
             async with session.get(url, timeout=timeout) as response:
                 html = await response.text()
                 dataRequest = html.replace('\r\n', ' ')
                 if dataRequest == "" :
-                    dataRequest = None
+                    dataRequest = ""
                 data = json.loads('{"data": "' + dataRequest + '"}')
                 _LOGGER.info(data)
                 await session.close()
