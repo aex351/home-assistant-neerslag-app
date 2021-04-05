@@ -24,7 +24,7 @@ from homeassistant.helpers.entity_registry import (
 
 _LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(seconds=120)
+SCAN_INTERVAL = timedelta(seconds=180)
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
@@ -235,10 +235,6 @@ class NeerslagSensorBuienalarm(mijnBasis):
         self._lat = f'{float(self._lat):.3f}'
         self._lon = f'{float(self._lon):.3f}'
 
-        _LOGGER.info("..BuienAlarm...USING LOCATION.>>>>")
-        _LOGGER.info(self._lat)
-        _LOGGER.info(self._lon)
-
         # self._entity_picture = "https://www.buienalarm.nl/assets/img/social.png"
         self._icon = "mdi:weather-cloudy"
 
@@ -254,8 +250,9 @@ class NeerslagSensorBuienalarm(mijnBasis):
         # return {"data": self._attrs}
 
     async def async_update(self):
-        self._state = random()
-        self._attrs = await self.getBuienalarmData()
+        if(self._enabled == True):
+            self._state = random()
+            self._attrs = await self.getBuienalarmData()
         return True
 
     async def getBuienalarmData(self) -> str:
@@ -268,7 +265,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
                 html = await response.text()
                 dataRequest = html.replace('\r\n', ' ')
                 if dataRequest == "" :
-                    dataRequest = None
+                    dataRequest = ""
                 data = json.loads('{"data":' + dataRequest + '}')
                 _LOGGER.info(data)
                 await session.close()
@@ -299,12 +296,7 @@ class NeerslagSensorBuienradar(mijnBasis):
         self._lat = f'{float(self._lat):.2f}'
         self._lon = f'{float(self._lon):.2f}'
 
-        _LOGGER.info("..BuienRadar...USING LOCATION.>>>>")
-        _LOGGER.info(self._lat)
-        _LOGGER.info(self._lon)
-
         # self._entity_picture = "https://cdn.buienradar.nl/resources/images/br-logo-square.png"
-        # self._entity_picture = "mdi:weather-cloudy"
         self._icon = "mdi:weather-cloudy"
 
     @ property
@@ -319,8 +311,9 @@ class NeerslagSensorBuienradar(mijnBasis):
         # return {"data": self._attrs}
 
     async def async_update(self):
-        self._state = random()
-        self._attrs = await self.getBuienradarData()
+        if(self._enabled == True):
+            self._state = random()
+            self._attrs = await self.getBuienradarData()
         return True
 
     async def getBuienradarData(self) -> str:
@@ -331,7 +324,6 @@ class NeerslagSensorBuienradar(mijnBasis):
 
             # https://www.buienradar.nl/overbuienradar/gratis-weerdata
             url = 'https://gps.buienradar.nl/getrr.php?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
-            #url = 'https://gpsgadget.buienradar.nl/data/raintext?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
             _LOGGER.info(url)
             async with session.get(url, timeout=timeout) as response:
                 html = await response.text()
@@ -342,167 +334,3 @@ class NeerslagSensorBuienradar(mijnBasis):
                 _LOGGER.info(data)
                 await session.close()
         return data
-
-
-# class NeerslagSensorBuienalarm(Entity):
-#     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
-#         self._name = "neerslag_buienalarm_regen_data"
-#         self._state = "working"  # None
-#         self._attrs = ["data empty"]
-#         # self._unique_id = config_entry.entry_id
-#         # self._unique_id = rand.random()
-#         self._unique_id = "neerslag-sensor-buienalarm-1"
-
-#         self._config_entry = config_entry
-
-#         if config_entry.data.get("NeerslagSensorUseHAforLocation") == True:
-#             self._lat = hass.config.latitude
-#             self._lon = hass.config.longitude
-
-#         else:
-#             self._lat = config_entry.data.get("buienalarmLatitude")
-#             self._lon = config_entry.data.get("buienalarmLongitude")
-
-#         # format values, enforce 3 decimals
-#         self._lat = f'{float(self._lat):.3f}'
-#         self._lon = f'{float(self._lon):.3f}'
-
-#         _LOGGER.info("..BuienAlarm...USING LOCATION.>>>>")
-#         _LOGGER.info(self._lat)
-#         _LOGGER.info(self._lon)
-
-#         # self._entity_picture = "https://www.buienalarm.nl/assets/img/social.png"
-#         self._icon = "mdi:weather-cloudy"
-
-#     @ property
-#     def icon(self):
-#         return self._icon
-
-#     # @property
-#     # def entity_picture(self):
-#     #     if not len(self._entity_picture):
-#     #         return
-#     #     return self._entity_picture
-
-#     @ property
-#     def name(self):
-#         return self._name
-
-#     @ property
-#     def state(self):
-#         return self._state
-
-#     @ property
-#     def state_attributes(self):
-#         if not len(self._attrs):
-#             return
-#         return self._attrs
-#         # return {"data": self._attrs}
-
-#     @ property
-#     def unique_id(self):
-#         """Return unique ID."""
-#         return self._unique_id
-
-#     async def async_update(self):
-#         self._state = random()
-#         self._attrs = await self.getBuienalarmData()
-#         return True
-
-#     async def getBuienalarmData(self) -> str:
-#         data = "Empty"
-#         # return data
-#         timeout = aiohttp.ClientTimeout(total=5)
-#         async with aiohttp.ClientSession() as session:
-#             url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&unit=mm%2Fu&c=' + str(rand.randint(0, 999999999999999))
-#             async with session.get(url, timeout=timeout) as response:
-#                 html = await response.text()
-#                 dataRequest = html.replace('\r\n', ' ')
-#                 if dataRequest == "" :
-#                     dataRequest = None
-#                 data = json.loads('{"data":' + dataRequest + '}')
-#                 _LOGGER.info(data)
-#                 await session.close()
-#         return data
-
-
-# class NeerslagSensorBuienradar(Entity):
-#     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
-#         self._name = "neerslag_buienradar_regen_data"
-#         self._state = "working"  # None
-#         self._attrs = ["data empty"]
-#         # self._unique_id = config_entry.entry_id
-#         # self._unique_id = rand.random()
-#         self._unique_id = "neerslag-sensor-buienradar-1"
-#         self._config_entry = config_entry
-
-#         if config_entry.data.get("NeerslagSensorUseHAforLocation") == True:
-#             self._lat = hass.config.latitude
-#             self._lon = hass.config.longitude
-
-#         else:
-#             self._lat = config_entry.data.get("buienradarLatitude")
-#             self._lon = config_entry.data.get("buienradarLongitude")
-
-#         # format values, enforce 2 decimals
-#         self._lat = f'{float(self._lat):.2f}'
-#         self._lon = f'{float(self._lon):.2f}'
-
-#         _LOGGER.info("..BuienRadar...USING LOCATION.>>>>")
-#         _LOGGER.info(self._lat)
-#         _LOGGER.info(self._lon)
-
-#         # self._entity_picture = "https://cdn.buienradar.nl/resources/images/br-logo-square.png"
-#         # self._entity_picture = "mdi:weather-cloudy"
-#         self._icon = "mdi:weather-cloudy"
-
-#     @ property
-#     def icon(self):
-#         return self._icon
-
-#     # @property
-#     # def entity_picture(self):
-#     #     if not len(self._entity_picture):
-#     #         return
-#     #     return self._entity_picture
-
-#     @ property
-#     def name(self):
-#         return self._name
-
-#     @ property
-#     def state(self):
-#         return self._state
-
-#     @ property
-#     def state_attributes(self):
-#         if not len(self._attrs):
-#             return
-#         return self._attrs
-#         # return {"data": self._attrs}
-
-#     @ property
-#     def unique_id(self):
-#         """Return unique ID."""
-#         return self._unique_id
-
-#     async def async_update(self):
-#         self._state = random()
-#         self._attrs = await self.getBuienradarData()
-#         return True
-
-#     async def getBuienradarData(self) -> str:
-#         data = "Empty"
-#         # return data
-#         timeout = aiohttp.ClientTimeout(total=5)
-#         async with aiohttp.ClientSession() as session:
-#             url = 'https://gpsgadget.buienradar.nl/data/raintext?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
-#             async with session.get(url, timeout=timeout) as response:
-#                 html = await response.text()
-#                 dataRequest = html.replace('\r\n', ' ')
-#                 if dataRequest == "" :
-#                     dataRequest = None
-#                 data = json.loads('{"data": "' + dataRequest + '"}')
-#                 _LOGGER.info(data)
-#                 await session.close()
-#         return data
