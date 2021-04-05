@@ -505,10 +505,11 @@ class CombiCard extends LitElement {
 			}
 		} else {
 			for (const entity of this._config.entities) {
+				chartData = this.prepareData(this.hass.states[entity].attributes.data, entity);
+				
 				// potential fix for when one of the services does not contain data
 				// the dataset becomes invalid and the graph doesnt load correctly
 				if( chartData.length > 0 ) {
-					console.log(chartData )
 					chartsDataAlsArray.push(chartData);
 					chartDatasets.push(this.generateDatasetObject(chartData[1], entity))
 				}
@@ -686,7 +687,7 @@ window.customCards.push({
 });
 
 console.info(
-	`%c NEERSLAG-CARD %c 2021.04.05.1`,
+	`%c NEERSLAG-CARD %c 2021.04.05.2`,
 	"Color: white; font-weight: bold; background: red;",
 	""
 );
