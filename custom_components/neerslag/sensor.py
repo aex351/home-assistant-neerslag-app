@@ -256,7 +256,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
         return True
 
     async def getBuienalarmData(self) -> str:
-        data = '{"data":""}'
+        data = json.loads('{"data":""}')
         # return data
         try:
             timeout = aiohttp.ClientTimeout(total=5)
@@ -322,7 +322,7 @@ class NeerslagSensorBuienradar(mijnBasis):
         return True
 
     async def getBuienradarData(self) -> str:
-        data = '{"data":""}'
+        data = json.loads('{"data":""}')
         # return data
         try:
             timeout = aiohttp.ClientTimeout(total=5)
