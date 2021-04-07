@@ -256,19 +256,24 @@ class NeerslagSensorBuienalarm(mijnBasis):
         return True
 
     async def getBuienalarmData(self) -> str:
-        data = "Empty"
+        data = '{"data":""}'
         # return data
-        timeout = aiohttp.ClientTimeout(total=5)
-        async with aiohttp.ClientSession() as session:
-            url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&unit=mm%2Fu&c=' + str(rand.randint(0, 999999999999999))
-            async with session.get(url, timeout=timeout) as response:
-                html = await response.text()
-                dataRequest = html.replace('\r\n', ' ')
-                if dataRequest == "" :
-                    dataRequest = ""
-                data = json.loads('{"data":' + dataRequest + '}')
-                _LOGGER.info(data)
-                await session.close()
+        try:
+            timeout = aiohttp.ClientTimeout(total=5)
+            async with aiohttp.ClientSession() as session:
+                url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&unit=mm%2Fu&c=' + str(rand.randint(0, 999999999999999))
+                async with session.get(url, timeout=timeout) as response:
+                    html = await response.text()
+                    dataRequest = html.replace('\r\n', ' ')
+                    if dataRequest == "" :
+                        dataRequest = ""
+                    data = json.loads('{"data":' + dataRequest + '}')
+                    _LOGGER.info(data)
+                    await session.close()
+        except:
+            _LOGGER.info("getBuienalarmData - timeout")
+            pass
+
         return data
 
 
@@ -317,20 +322,24 @@ class NeerslagSensorBuienradar(mijnBasis):
         return True
 
     async def getBuienradarData(self) -> str:
-        data = "Empty"
+        data = '{"data":""}'
         # return data
-        timeout = aiohttp.ClientTimeout(total=5)
-        async with aiohttp.ClientSession() as session:
+        try:
+            timeout = aiohttp.ClientTimeout(total=5)
+            async with aiohttp.ClientSession() as session:
+                # https://www.buienradar.nl/overbuienradar/gratis-weerdata
+                url = 'https://gps.buienradar.nl/getrr.php?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
+                _LOGGER.info(url)
+                async with session.get(url, timeout=timeout) as response:
+                    html = await response.text()
+                    dataRequest = html.replace('\r\n', ' ')
+                    if dataRequest == "" :
+                        dataRequest = ""
+                    data = json.loads('{"data": "' + dataRequest + '"}')
+                    _LOGGER.info(data)
+                    await session.close()
+        except:
+            _LOGGER.info("getBuienradarData - timeout")
+            pass
 
-            # https://www.buienradar.nl/overbuienradar/gratis-weerdata
-            url = 'https://gps.buienradar.nl/getrr.php?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
-            _LOGGER.info(url)
-            async with session.get(url, timeout=timeout) as response:
-                html = await response.text()
-                dataRequest = html.replace('\r\n', ' ')
-                if dataRequest == "" :
-                    dataRequest = ""
-                data = json.loads('{"data": "' + dataRequest + '"}')
-                _LOGGER.info(data)
-                await session.close()
         return data
