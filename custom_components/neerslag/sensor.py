@@ -94,7 +94,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     #     async_add_entities([DummyDEF(hass, config_entry, False)], update_before_add=False)
 
     if config_entry.data.get("buienalarm") == True:
-        _LOGGER.info("<><><><>----------------<><<><>")
         async_add_entities([NeerslagSensorBuienalarm(hass, config_entry, True)], update_before_add=True)
 
     if config_entry.data.get("buienalarm") == False:
@@ -204,9 +203,9 @@ class DummyDEF(mijnBasis):
         self._attrs = ["data empty"]
         self._unique_id = "neerslag-sensor-DummyDEF"
 
-        _LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>")
-        _LOGGER.info(config_entry.entry_id)
-        _LOGGER.info(config_entry.unique_id)
+        # _LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>")
+        # _LOGGER.info(config_entry.entry_id)
+        # _LOGGER.info(config_entry.unique_id)
 
         self._enabled = enabled
         config_entry.add_update_listener(self.mine_update_listener)
@@ -268,7 +267,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
                     if dataRequest == "" :
                         dataRequest = ""
                     data = json.loads('{"data":' + dataRequest + '}')
-                    _LOGGER.info(data)
+                    # _LOGGER.info(data)
                     await session.close()
         except:
             _LOGGER.info("getBuienalarmData - timeout")
@@ -329,14 +328,14 @@ class NeerslagSensorBuienradar(mijnBasis):
             async with aiohttp.ClientSession() as session:
                 # https://www.buienradar.nl/overbuienradar/gratis-weerdata
                 url = 'https://gps.buienradar.nl/getrr.php?lat=' + self._lat + '&lon=' + self._lon + '&c=' + str(rand.randint(0, 999999999999999))
-                _LOGGER.info(url)
+                # _LOGGER.info(url)
                 async with session.get(url, timeout=timeout) as response:
                     html = await response.text()
                     dataRequest = html.replace('\r\n', ' ')
                     if dataRequest == "" :
                         dataRequest = ""
                     data = json.loads('{"data": "' + dataRequest + '"}')
-                    _LOGGER.info(data)
+                    # _LOGGER.info(data)
                     await session.close()
         except:
             _LOGGER.info("getBuienradarData - timeout")
