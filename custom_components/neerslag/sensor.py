@@ -153,10 +153,10 @@ class mijnBasis(Entity):
                 # Serial numbers are unique identifiers within a specific domain
                 ("neerslag", "neerslag-device")
             },
-            "name": "Neerslag",
+            "name": "Neerslag App",
             "manufacturer": "aex351",
-            "model": "Neerslag with Buienalarm and Buienradar sensor. Includes the front-end card",
-            "sw_version": "beta",
+            "model": "All-in-one package",
+            "sw_version": "",
             "via_device": ("neerslag", "abcd"),
         }
 
