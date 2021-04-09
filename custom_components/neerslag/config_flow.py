@@ -73,10 +73,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             # info = await validate_input(self.hass, user_input)
-            title = "Neerslag Sensor"
+            title = "Neerslag App"
             data = user_input
-            _LOGGER.info("Dit wordt nu uitgevoerd...........")
-            _LOGGER.info(data)
+            # _LOGGER.info("Dit wordt nu uitgevoerd...........")
+            # _LOGGER.info(data)
 
         except CannotConnect:
             errors["base"] = "cannot_connect"
@@ -106,10 +106,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input=None):
 
-        _LOGGER.info("HIER>>>")
-        _LOGGER.info(self.config_entry.data.get("buienalarmLatitude"))
-        _LOGGER.info(self.config_entry.data.get("buienalarm"))
-        _LOGGER.info(self.config_entry.data.get("NeerslagSensorUseHAforLocation"))
+        # _LOGGER.info("HIER>>>")
+        # _LOGGER.info(self.config_entry.data.get("buienalarmLatitude"))
+        # _LOGGER.info(self.config_entry.data.get("buienalarm"))
+        # _LOGGER.info(self.config_entry.data.get("NeerslagSensorUseHAforLocation"))
         testtest = vol.Schema({vol.Optional("buienalarm", default=self.config_entry.data.get("buienalarm")): bool,
                                vol.Optional("buienalarmLatitude", default=self.config_entry.data.get("buienalarmLatitude")): str,
                                vol.Optional("buienalarmLongitude", default=self.config_entry.data.get("buienalarmLongitude")): str,
@@ -119,14 +119,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                                vol.Optional("NeerslagSensorUseHAforLocation", default=self.config_entry.data.get("NeerslagSensorUseHAforLocation")): bool
                                })
 
-        _LOGGER.info("----->>>>---------------")
-        _LOGGER.info(self.config_entry.options)
-        _LOGGER.info(self.config_entry.data)
-        _LOGGER.info("------<<<<--------------")
+        # _LOGGER.info("----->>>>---------------")
+        # _LOGGER.info(self.config_entry.options)
+        # _LOGGER.info(self.config_entry.data)
+        # _LOGGER.info("------<<<<--------------")
         """Manage the options."""
         if user_input is not None:
-            _LOGGER.info(user_input)
-            _LOGGER.info("<><><><><><><><><><>")
+            # _LOGGER.info(user_input)
+            # _LOGGER.info("<><><><><><><><><><>")
             # self.config_entry.data = user_input
             return self.async_create_entry(title="", data=user_input)
 
