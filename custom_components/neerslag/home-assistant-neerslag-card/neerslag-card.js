@@ -392,7 +392,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 										//borderDash: [20, 5],
 										label: {
 											enabled: true,
-											content: 'Licht',
+											content: 'licht',
 											position: 'right',
 											fontSize: 10,
 											xPadding: 3,
@@ -691,7 +691,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.04.08.1`,
+			`%c NEERSLAG-CARD %c 2021.04.11.0`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
