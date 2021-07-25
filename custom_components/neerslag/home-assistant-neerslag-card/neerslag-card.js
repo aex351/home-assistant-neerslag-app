@@ -186,25 +186,25 @@ customElements.whenDefined("home-assistant-main").then(() => {
 				changedProperties.forEach((oldValue, propName) => {
 					//console.log(propName)
 					if (propName == "hass") {
-
-						// when using single entity
-						if (this._config.entity) {
-							//console.log(this._config.entity);
-							if (this.hass.states[this._config.entity].attributes.data !== oldValue.states[this._config.entity].attributes.data) {
-
-								//console.log("data has changed, lets update")
-								this.updateGrafiek()
-							}
-						}
-
-						//when using multiple entities
-						if (this._config.entities) {
-							for (const entity of this._config.entities) {
-								//console.log(entity)
-								if (this.hass.states[entity].attributes.data !== oldValue.states[entity].attributes.data) {
-
+						if (typeof oldValue != 'undefined') {
+							// when using single entity
+							if (this._config.entity) {
+								//console.log(this._config.entity);
+								if (this.hass.states[this._config.entity].attributes.data !== oldValue.states[this._config.entity].attributes.data) {
 									//console.log("data has changed, lets update")
 									this.updateGrafiek()
+								}
+							}
+
+							//when using multiple entities
+							if (this._config.entities) {
+								for (const entity of this._config.entities) {
+									//console.log(entity)
+									if (this.hass.states[entity].attributes.data !== oldValue.states[entity].attributes.data) {
+										// console.log("data has changed, lets update")
+										// console.log(entity)
+										this.updateGrafiek()
+									}
 								}
 							}
 						}
@@ -691,7 +691,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.04.12.0`,
+			`%c NEERSLAG-CARD %c 2021.07.26.0`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
