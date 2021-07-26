@@ -66,3 +66,8 @@ entities:
   ```
 > Note: If Home Assistant has not yet received data from the sensors, the card can remain blank.
 
+### Advanced Neerslag Card configuration options
+Graph auto zoom can be partially disabled. The graph will start zoomed out. This is usefull for when you want an initial fixed size graph. Auto zoom will continue on extreme rainfall.  
+```yaml
+autozoom: false
+```

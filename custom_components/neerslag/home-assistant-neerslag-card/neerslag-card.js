@@ -76,6 +76,8 @@ customElements.whenDefined("home-assistant-main").then(() => {
 				return 2;
 			}
 
+			zoomwaarde = 0.5;
+
 			render() {
 
 				if (!this._config || !this.hass) {
@@ -92,6 +94,10 @@ customElements.whenDefined("home-assistant-main").then(() => {
 					this._config.entities.forEach(value => {
 						stateMultiObj.push(this.hass.states[value]);
 					})
+				}
+
+				if (this._config.autozoom == false) {
+					this.zoomwaarde = 5.5;
 				}
 
 				// Display "No Entity or Entities found card"
@@ -338,7 +344,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 											scaleInstance.ticksAsNumbers[scaleInstance.ticksAsNumbers.length - 1] = null;
 										},
 										ticks: {
-											suggestedMax: 0.5,
+											suggestedMax: this.zoomwaarde,
 											suggestedMin: 0.0,
 											beginAtZero: true,
 											stepSize: 1,
@@ -691,7 +697,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.07.26.0`,
+			`%c NEERSLAG-CARD %c 2021.07.26.1`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
