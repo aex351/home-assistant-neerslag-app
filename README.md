@@ -1,10 +1,10 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 # Neerslag App
 Neerslag app for Home Assistant. All-in-one package (Sensors + Card).
 
 Display rain forecast using Buienalarm and/or Buienradar sensor data. The Neerslag App (and the sensors) is fully configurable via the Home Assistant interface. 
 
-> This package contains the Neerslag Card. Make sure to uninstall this from Home Assistant before using the Neerslag App, to avoid unexpected behaviour. This includes manually removing the custom sensors.
+> This package contains the Neerslag Card. Make sure to uninstall the Neerslag Card package from Home Assistant before using the Neerslag App to avoid unexpected behaviour. This includes manually removing the custom sensors.
 
 ## Features
 * Everything from the Neerslag Card;
@@ -22,10 +22,9 @@ Display rain forecast using Buienalarm and/or Buienradar sensor data. The Neersl
 
 ## 1a. Install via HACS (recommended)
 This is the recommended option and also allows for easy updates.
-1) Add this repository to HACS;
-2) Add the Neerslag App in the Home Assistant Community Store;
-3) Add the Neerslag App as an Integration in Home Assistant (config/integration);
-4) Restart Home Assistant (optional).
+1) Find this repository in HACS and click install;
+2) Add the Neerslag App as an Integration in Home Assistant (config/integration);
+3) Restart Home Assistant (optional).
 
 For updates go to the Community Store (HACS) and click update.
 
@@ -40,10 +39,10 @@ Not recommended, you will need to track updates manually by browsing to the repo
 
 For updates, repeat step 1 to 4. Home Assistant will not delete any configuration.
 
-## 3. Configure the Neerslag App (via interface)
+## 2. Configure the Neerslag App (via interface)
 The Neerslag App is fully configurable via the interface. Go to `config/integrations` and click on options. Select which sensor you want to use and provide the location data. There is an option to use the built-in Home Assistant location data. If this checkbox is selected, it will override the location settings of the individual sensors.
 
-## 4. Add the Neerslag Card to your Dashboard
+## 3. Add the Neerslag Card to your Dashboard
 1) Go to your dashboard, go to configure, and click `add card`
 2) Find the Neerslag Card in the list of cards
 3) Add the card and configure the card.
