@@ -22,9 +22,10 @@ Display rain forecast using Buienalarm and/or Buienradar sensor data. The Neersl
 
 ## 1a. Install via HACS (recommended)
 This is the recommended option and also allows for easy updates.
-1) Find this repository in HACS and click install;
-2) Add the Neerslag App as an Integration in Home Assistant (config/integration);
-3) Restart Home Assistant (optional).
+1) Find this repository in HACS and click install
+2) Restart Home Assistant and clear the browser cache;
+3) Add the Neerslag App as an Integration in Home Assistant `(menu: settings -> integrations)`;
+4) Restart Home Assistant and clear the browser cache (optional).
 
 For updates go to the Community Store (HACS) and click update.
 
@@ -34,20 +35,20 @@ Not recommended, you will need to track updates manually by browsing to the repo
 2) In Home Assistant, create a folder `config/custom_components`;
 3) Add the Neerslag App to the `custom_components` folder.;
 4) Restart Home Assistant
-5) Add the Neerslag App as an Integration in Home Assistant (config/integration).
-6) Restart Home Assistant (optional)
+5) Add the Neerslag App as an Integration in Home Assistant `(menu: settings -> integrations)`.
+6) Restart Home Assistant and clear the browser cache (optional).
 
 For updates, repeat step 1 to 4. Home Assistant will not delete any configuration.
 
 ## 2. Configure the Neerslag App (via interface)
-The Neerslag App is fully configurable via the interface. Go to `config/integrations` and click on options. Select which sensor you want to use and provide the location data. There is an option to use the built-in Home Assistant location data. If this checkbox is selected, it will override the location settings of the individual sensors.
+The Neerslag App is fully configurable via the interface. Go to `(menu: settings -> integrations)` and click on options. Select which sensor you want to use and provide the location data. There is an option to use the built-in Home Assistant location data. If this checkbox is selected, it will override the location settings of the individual sensors.
 
 ## 3. Add the Neerslag Card to your Dashboard
 1) Go to your dashboard, go to configure, and click `add card`
 2) Find the Neerslag Card in the list of cards
 3) Add the card and configure the card.
 
-> Note: Due to caching, The Neerslag Card might not be visible in the Home Assistant card selector. Restart Home Assistant and clear the browser cache.
+> Note: Due to caching, The Neerslag Card might not be visible in the Home Assistant card selector directly after installing the Neerslag App. Restart Home Assistant and clear the browser cache to resolve this.
 
 ### Using one sensor:
 ```yaml
