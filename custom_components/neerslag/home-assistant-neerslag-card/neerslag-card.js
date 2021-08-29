@@ -68,7 +68,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 				//console.log("setConfig");
 				if (!config.entity && !config.entities) {
-					throw new Error('You need to define an entity or entities list');
+					throw new Error('You need to define an entity or a list of entities. See readme file for available entities (sensors)');
 				}
 				this._config = config;
 			}
@@ -222,6 +222,11 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 			makeGraph() {
 
+				var style = getComputedStyle(document.body);
+				var primaryTextColor = style.getPropertyValue('--primary-text-color');
+				var secondaryTextColor = style.getPropertyValue('--secondary-text-color');
+
+
 				if (!this.myChart) {
 					let ctx;
 					if (this.shadowRoot) {
@@ -234,20 +239,25 @@ customElements.whenDefined("home-assistant-main").then(() => {
 						options: {
 							scales: {
 								y: {
+									ticks:{color: secondaryTextColor,},
 									beginAtZero: true,
 									title: {
 										display: true,
-										text: 'Regen (mm / uur)'
+										text: 'Regen (mm / uur)',
+										color: primaryTextColor,
 									},
 									suggestedMax: this.zoomwaarde,
 									suggestedMin: 0.0,
 									beginAtZero: true,
 									stepSize: 10,
+									
 								},
 								x: {
+									ticks:{color: secondaryTextColor,},
 									title: {
 										display: true,
-										text: 'Regenval voorspelling'
+										text: 'Regenval voorspelling',
+										color: primaryTextColor,
 									},
 								}
 							},
@@ -650,7 +660,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.08.29.1`,
+			`%c NEERSLAG-CARD %c 2021.08.29.2`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
