@@ -1,3 +1,6 @@
+// import * as data from './translations/en.json';
+// const {test} = data;
+
 customElements.whenDefined("home-assistant-main").then(() => {
 	// All your code goes here
 
@@ -79,6 +82,62 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 			zoomwaarde = 0.5;
 
+
+			vertaling = {
+				nl : {
+					regenMmUur : 'Regen (mm / uur)',
+					regenvalVoorspelling : 'Regenval voorspelling',
+					licht : 'Licht',
+					matig : 'Matig',
+					zwaar : 'Zwaar',
+				},
+				en : {
+					regenMmUur : 'Rain (mm / uur)',
+					regenvalVoorspelling : 'Rainfall forecast',
+					licht : 'Light',
+					matig : 'Moderate',
+					zwaar : 'Heavy',
+				}
+			}
+
+
+			localize(key){
+				
+				let lang = this.getCurrentLanguage();
+
+				if(!this.vertaling[lang]){
+					// language does not exist, default back to Dutch language
+					lang = 'nl'
+				}
+
+				let translatedText
+				// key - translation found
+				if(this.vertaling[lang][key]){
+					translatedText = this.vertaling[lang][key];
+				} else {
+					if(lang != 'nl') {
+						lang = 'nl'
+						if(this.vertaling[lang][key]){
+							// default back to dutch
+							translatedText = this.vertaling[lang][key];
+						} else {
+							translatedText = 'No translation text found'
+						}
+					}
+				}
+
+				return translatedText
+			}
+
+			getCurrentLanguage() {
+				let lang = (localStorage.getItem('selectedLanguage') || '') .replace(/['"]+/g, '').replace('-', '_');
+				if(lang == '') {
+					lang = (navigator.language || navigator.userLanguage).replace(/['"]+/g, '').replace('-', ' ').substring(0, 2); 
+				}
+				return lang
+			}
+
+
 			render() {
 
 				if (!this._config || !this.hass) {
@@ -144,13 +203,26 @@ customElements.whenDefined("home-assistant-main").then(() => {
 				}
 				*/
 
+				// console.log(this.hass.localize);
+
 				this.dontMakeGraph = false;
 				// Display "Plot a graph card"
 				return html`
 					<ha-card>
 
 						<h1 class="card-header">${this._config.title}</h1>
+						<div>
+							<!-- [%key_id:1234%]
+hier: -->
+						<!-- ${this.hass.localize("state_badge.default.entity_not_found")} -->
 
+						<!-- $[%state_badge.default.entity_not_found%] -->
+						<!-- hier2:					
+						${this.hass.localize("neerslag.title")}
+						${this.hass.localize("state_badge.title")}
+						${this.hass.localize("title")} -->
+
+						</div>
 						<div id="plotGraphCard">
 							<div style="display: block;">
 								<canvas id="neerslagChart"></canvas>
@@ -223,9 +295,10 @@ customElements.whenDefined("home-assistant-main").then(() => {
 			makeGraph() {
 
 				var style = getComputedStyle(document.body);
+				var primaryColor = style.getPropertyValue('--primary-color');
 				var primaryTextColor = style.getPropertyValue('--primary-text-color');
 				var secondaryTextColor = style.getPropertyValue('--secondary-text-color');
-
+				
 
 				if (!this.myChart) {
 					let ctx;
@@ -237,13 +310,19 @@ customElements.whenDefined("home-assistant-main").then(() => {
 					this.myChart = new Chart(ctx, {
 						type: 'line',
 						options: {
+							backgroundColor: [
+								'rgba(89, 160, 238, 0.2)'
+							],
+							borderColor: [
+								'rgba(89, 160, 238, 1)'
+							],
 							scales: {
 								y: {
 									ticks:{color: secondaryTextColor,},
 									beginAtZero: true,
 									title: {
 										display: true,
-										text: 'Regen (mm / uur)',
+										text: this.localize('regenMmUur'),
 										color: primaryTextColor,
 									},
 									suggestedMax: this.zoomwaarde,
@@ -256,7 +335,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 									ticks:{color: secondaryTextColor,},
 									title: {
 										display: true,
-										text: 'Regenval voorspelling',
+										text: this.localize('regenvalVoorspelling'),
 										color: primaryTextColor,
 									},
 								}
@@ -307,7 +386,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 											borderWidth: 1,
 											label: {
 												enabled: true,
-												content: 'Zwaar',
+												content: this.localize('zwaar'),
 												position: 'end',
 												font: { size: 10 },
 												xPadding: 3,
@@ -323,7 +402,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 											borderWidth: 1,
 											label: {
 												enabled: true,
-												content: 'Matig',
+												content: this.localize('matig'),
 												position: 'end',
 												font: { size: 10 },
 												xPadding: 3,
@@ -339,7 +418,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 											borderWidth: 1,
 											label: {
 												enabled: true,
-												content: 'Licht',
+												content: this.localize('licht'),
 												position: 'end',
 												font: { size: 10 },
 												xPadding: 3,
@@ -400,12 +479,12 @@ customElements.whenDefined("home-assistant-main").then(() => {
 				return {
 					label: vlabel,
 					data: data,
-					backgroundColor: [
-						'rgba(89, 160, 238, 0.2)'
-					],
-					borderColor: [
-						'rgba(89, 160, 238, 1)'
-					],
+					// backgroundColor: [
+					// 	'rgba(89, 160, 238, 0.2)'
+					// ],
+					// borderColor: [
+					// 	'rgba(89, 160, 238, 1)'
+					// ],
 					// borderWidth: 2
 				}
 			}
@@ -660,7 +739,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.08.29.2`,
+			`%c NEERSLAG-CARD %c 2021.08.31.0`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
