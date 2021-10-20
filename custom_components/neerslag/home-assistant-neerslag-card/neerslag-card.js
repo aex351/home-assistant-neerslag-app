@@ -138,6 +138,8 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 			render() {
 
+				console.log('render()');
+
 				if (!this._config || !this.hass) {
 					return html``;
 				}
@@ -204,29 +206,29 @@ customElements.whenDefined("home-assistant-main").then(() => {
 				// console.log(this.hass.localize);
 
 				this.dontMakeGraph = false;
+
+				console.log(this.prepareChartDataSets().getChartsDataAlsArray());
+
 				// Display "Plot a graph card"
 				return html`
+
 					<ha-card>
 
-						<h1 class="card-header">${this._config.title}</h1>
-						<div>
-							<!-- [%key_id:1234%]
-hier: -->
-						<!-- ${this.hass.localize("state_badge.default.entity_not_found")} -->
+						<ha-icon style="right:20px" icon="mdi:weather-rainy"></ha-icon>
 
-						<!-- $[%state_badge.default.entity_not_found%] -->
-						<!-- hier2:
-						${this.hass.localize("neerslag.title")}
-						${this.hass.localize("state_badge.title")}
-						${this.hass.localize("title")} -->
+						<h1 class="card-header">
+							<div class="name">
+								${this._config.title}
+							</div>
 
-						</div>
+						</h1>
+
 						<div id="plotGraphCard">
 							<div style="display: block;">
 								<canvas id="neerslagChart"></canvas>
 							</div>
 						</div>
-						<ha-icon icon="mdi:weather-rainy"></ha-icon>
+
 
 					</ha-card>
 				`;
@@ -493,6 +495,8 @@ hier: -->
 					});
 				}
 			}
+
+
 
 			/**
 			 *
@@ -776,7 +780,7 @@ hier: -->
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.10.20.0`,
+			`%c NEERSLAG-CARD %c 2021.10.20.1`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
