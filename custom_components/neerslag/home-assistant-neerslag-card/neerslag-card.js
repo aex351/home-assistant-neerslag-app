@@ -1,6 +1,3 @@
-// import * as data from './translations/en.json';
-// const {test} = data;
-
 customElements.whenDefined("home-assistant-main").then(() => {
 
 	const LitElement = customElements.get("home-assistant-main")
@@ -88,6 +85,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 					licht : 'Licht',
 					matig : 'Matig',
 					zwaar : 'Zwaar',
+					geenDataBeschikbaar: 'Geen sensor data beschikbaar',
 				},
 				en : {
 					regenMmUur : 'Rain (mm / uur)',
@@ -95,6 +93,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 					licht : 'Light',
 					matig : 'Moderate',
 					zwaar : 'Heavy',
+					geenDataBeschikbaar: 'No sensor data available',
 				}
 			}
 
@@ -137,8 +136,6 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 
 			render() {
-
-				console.log('render()');
 
 				if (!this._config || !this.hass) {
 					return html``;
@@ -207,7 +204,36 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 				this.dontMakeGraph = false;
 
-				console.log(this.prepareChartDataSets().getChartsDataAlsArray());
+				if(this.prepareChartDataSets().getChartsDataAlsArray()[0] === undefined) {
+					this.dontMakeGraph = true;
+					this.myChart = null;
+					return html`
+
+					<ha-card>
+
+						<ha-icon style="right:20px" icon="mdi:weather-rainy"></ha-icon>
+
+						<h1 class="card-header">
+							<div class="name">
+								${this._config.title}
+							</div>
+
+						</h1>
+
+						<div id="plotGraphCard">
+							<div style="display: block;">
+								${this.localize('geenDataBeschikbaar')}
+							</div>
+						</div>
+
+
+					</ha-card>
+				`;
+
+
+				}
+
+
 
 				// Display "Plot a graph card"
 				return html`
@@ -236,6 +262,10 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 			firstUpdated(changedProperties) {
 
+				if(this.dontMakeGraph == true) {
+					return;
+				}
+
 				// changedProperties.forEach((oldValue, propName) => {
 				// 	console.log(`${propName} changed. oldValue: ${oldValue}`);
 				// });
@@ -249,11 +279,14 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 			}
 
-			test() {
-				//console.log("jaa wordt afgevuurd");
-			}
 
 			updated(changedProperties) {
+
+
+				if(this.myChart === null) {
+					this.makeGraph();
+				}
+
 				//console.log(changedProperties)
 				if (this.myChart) {
 					if (this.myChart.width === 0) {
@@ -293,6 +326,11 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 
 			makeGraph() {
+
+				if(this.dontMakeGraph == true) {
+					return;
+				}
+
 
 				//https://stackoverflow.com/a/35663683/4181822
 				function hexify(color) {
@@ -780,7 +818,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.10.20.1`,
+			`%c NEERSLAG-CARD %c 2021.10.20.2`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
