@@ -2,8 +2,6 @@
 // const {test} = data;
 
 customElements.whenDefined("home-assistant-main").then(() => {
-	// All your code goes here
-
 
 	const LitElement = customElements.get("home-assistant-main")
 		? Object.getPrototypeOf(customElements.get("home-assistant-main"))
@@ -102,7 +100,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 
 
 			localize(key){
-				
+
 				let lang = this.getCurrentLanguage();
 
 				if(!this.vertaling[lang]){
@@ -132,7 +130,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 			getCurrentLanguage() {
 				let lang = (localStorage.getItem('selectedLanguage') || '') .replace(/['"]+/g, '').replace('-', '_');
 				if(lang == '') {
-					lang = (navigator.language || navigator.userLanguage).replace(/['"]+/g, '').replace('-', ' ').substring(0, 2); 
+					lang = (navigator.language || navigator.userLanguage).replace(/['"]+/g, '').replace('-', ' ').substring(0, 2);
 				}
 				return lang
 			}
@@ -217,7 +215,7 @@ hier: -->
 						<!-- ${this.hass.localize("state_badge.default.entity_not_found")} -->
 
 						<!-- $[%state_badge.default.entity_not_found%] -->
-						<!-- hier2:					
+						<!-- hier2:
 						${this.hass.localize("neerslag.title")}
 						${this.hass.localize("state_badge.title")}
 						${this.hass.localize("title")} -->
@@ -294,11 +292,50 @@ hier: -->
 
 			makeGraph() {
 
+				//https://stackoverflow.com/a/35663683/4181822
+				function hexify(color) {
+					var values = color
+					  .replace(/rgba?\(/, '')
+					  .replace(/\)/, '')
+					  .replace(/[\s+]/g, '')
+					  .split(',');
+					var a = parseFloat(values[3] || 1),
+						r = Math.floor(a * parseInt(values[0]) + (1 - a) * 255),
+						g = Math.floor(a * parseInt(values[1]) + (1 - a) * 255),
+						b = Math.floor(a * parseInt(values[2]) + (1 - a) * 255);
+					return "#" +
+					  ("0" + r.toString(16)).slice(-2) +
+					  ("0" + g.toString(16)).slice(-2) +
+					  ("0" + b.toString(16)).slice(-2);
+				  }
+
+				//https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+				const hexToRgb = hex =>
+				hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+						   ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+				  .substring(1).match(/.{2}/g)
+				  .map(x => parseInt(x, 16))
+
+				// https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4#gistcomment-3036936
+				const percentToHex = (p) => {
+					const percent = Math.max(0, Math.min(100, p)); // bound percent from 0 to 100
+					const intValue = Math.round(p / 100 * 255); // map percent to nearest integer (0 - 255)
+					const hexValue = intValue.toString(16); // get hexadecimal representation
+					return hexValue.padStart(2, '0').toUpperCase(); // format with leading 0 and upper case characters
+				}
+
+				function convertToHexIfNeeded(color) {
+					if(color.includes("#") == false){
+						color = hexify(color)
+					}
+					return color
+				}
+
 				var style = getComputedStyle(document.body);
-				var primaryColor = style.getPropertyValue('--primary-color');
-				var primaryTextColor = style.getPropertyValue('--primary-text-color');
-				var secondaryTextColor = style.getPropertyValue('--secondary-text-color');
-				
+				var primaryColor = convertToHexIfNeeded(style.getPropertyValue('--primary-color'));
+				var accentColor = convertToHexIfNeeded(style.getPropertyValue('--accent-color'));
+				var primaryTextColor = convertToHexIfNeeded(style.getPropertyValue('--primary-text-color'));
+				var secondaryTextColor = convertToHexIfNeeded(style.getPropertyValue('--secondary-text-color'));
 
 				if (!this.myChart) {
 					let ctx;
@@ -311,10 +348,10 @@ hier: -->
 						type: 'line',
 						options: {
 							backgroundColor: [
-								'rgba(89, 160, 238, 0.2)'
+								primaryColor.replace(' ','')+percentToHex(20)
 							],
 							borderColor: [
-								'rgba(89, 160, 238, 1)'
+								primaryColor
 							],
 							scales: {
 								y: {
@@ -329,7 +366,7 @@ hier: -->
 									suggestedMin: 0.0,
 									beginAtZero: true,
 									stepSize: 10,
-									
+
 								},
 								x: {
 									ticks:{color: secondaryTextColor,},
@@ -739,7 +776,7 @@ hier: -->
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2021.08.31.0`,
+			`%c NEERSLAG-CARD %c 2021.10.20.0`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
