@@ -207,11 +207,43 @@ customElements.whenDefined("home-assistant-main").then(() => {
 								<ol>
 									<li>buien-rain-forecast</li>
 								</ol>
-								This integration is known for causing problems with the Neerslag Card. Please remove it.
+								This integration/plugin is known for causing problems with the Neerslag Card. Please remove it from your Home Assistant installation and filesystem.
 							</div>
 						</div>
+					</ha-card>
+					`
+				}
 
+				check = customElements.get("history-explorer-card");
+				if(check) {
+					return html`
+						<style>
+							.not-found {
+								flex: 1;
+								background-color: red;
+								padding: 8px;
+							}
+						</style>
+					<ha-card>
 
+						<ha-icon style="right:20px" icon="mdi:weather-rainy"></ha-icon>
+
+						<h1 class="card-header">
+							<div class="name">
+								${this._config.title}
+							</div>
+
+						</h1>
+
+						<div id="plotGraphCard">
+							<div class="not-found">
+								Error: Incompatible integration detected
+								<ol>
+									<li>history-explorer-card</li>
+								</ol>
+								This integration/plugin is known for causing problems with the Neerslag Card. Please remove it from your Home Assistant installation and filesystem.
+							</div>
+						</div>
 					</ha-card>
 					`
 				}
@@ -873,7 +905,7 @@ customElements.whenDefined("home-assistant-main").then(() => {
 		});
 
 		console.info(
-			`%c NEERSLAG-CARD %c 2022.01.31.0`,
+			`%c NEERSLAG-CARD %c 2022.01.31.1`,
 			"Color: white; font-weight: bold; background: red;",
 			""
 		);
