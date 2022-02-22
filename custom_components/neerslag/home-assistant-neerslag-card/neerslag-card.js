@@ -4,21 +4,6 @@ import {
 	css
 } from "https://unpkg.com/lit-element@3.1.2/lit-element.js?module";
 
-// class CombiCardEditor extends LitElement {
-
-// 	setConfig(config) {
-// 		this._config = config;
-// 	}
-
-// 	configChanged(newConfig) {
-// 		const event = new Event("config-changed", {
-// 		bubbles: true,
-// 		composed: true
-// 		});
-// 		event.detail = {config: newConfig};
-// 		this.dispatchEvent(event);
-// 	}
-// }
 class CombiCard extends LitElement {
 
 	static get properties() {
@@ -35,10 +20,6 @@ class CombiCard extends LitElement {
 			title: "Neerslag"
 		}
 	}
-
-	// static getConfigElement() {
-	// 	return document.createElement("combi-card-editor");
-	// }
 
 	static get styles() {
 		return css`
@@ -58,13 +39,10 @@ class CombiCard extends LitElement {
 
 	setConfig(config) {
 
-		// console.log("setConfig");
 		if (!config.entity && !config.entities) {
 			throw new Error('You need to define an entity or a list of entities. See readme file for available entities (sensors)');
 		}
 		this._config = config;
-
-		//default zoom waarde
 		this.zoomwaarde = 0.5;
 	}
 
@@ -100,19 +78,16 @@ class CombiCard extends LitElement {
 		let lang = this.getCurrentLanguage();
 
 		if(!this.vertaling[lang]){
-			// language does not exist, default back to Dutch language
 			lang = 'nl'
 		}
 
 		let translatedText
-		// key - translation found
 		if(this.vertaling[lang][key]){
 			translatedText = this.vertaling[lang][key];
 		} else {
 			if(lang != 'nl') {
 				lang = 'nl'
 				if(this.vertaling[lang][key]){
-					// default back to dutch
 					translatedText = this.vertaling[lang][key];
 				} else {
 					translatedText = 'No translation text found'
@@ -131,9 +106,7 @@ class CombiCard extends LitElement {
 		return lang
 	}
 
-
 	render() {
-
 		if (!this._config || !this.hass) {
 			return html``;
 		}
@@ -208,30 +181,6 @@ class CombiCard extends LitElement {
 			`
 		}
 
-		/*
-		// Display "No Sensor Data card"
-		if (!stateObj && !stateMultiObj) {
-			if(this.hass.states[this._config.entity].attributes.data === "")  {
-				this.dontMakeGraph = true
-				return html`
-					<ha-card>
-					<h1 class="card-header">${this._config.title}</h1>
-
-						<ha-icon icon="mdi:weather-rainy"></ha-icon>
-						<div class="not-found">
-						<div id="plotGraphCard">
-							<div>No sensor data available</div>
-						</div>
-						</div>
-					<ha-icon icon="mdi:weather-rainy"></ha-icon>
-					</ha-card>
-				`
-			}
-		}
-		*/
-
-		// console.log(this.hass.localize);
-
 		this.dontMakeGraph = false;
 
 		if(this.prepareChartDataSets().getChartsDataAlsArray()[0] === undefined) {
@@ -259,8 +208,6 @@ class CombiCard extends LitElement {
 
 			</ha-card>
 		`;
-
-
 		}
 
 		// Display "Plot a graph card"
@@ -294,17 +241,10 @@ class CombiCard extends LitElement {
 			return;
 		}
 
-		// changedProperties.forEach((oldValue, propName) => {
-		// 	console.log(`${propName} changed. oldValue: ${oldValue}`);
-		// });
 		this.makeGraph();
 		if (this.myChart.width === 0) {
-			//console.log("firstUpdated: chart is niet zichtbaar!");
 			this.myChart.resize();
 		}
-
-		//document.addEventListener('resize',this.test());
-
 	}
 
 
@@ -316,13 +256,11 @@ class CombiCard extends LitElement {
 
 		if (this.myChart) {
 			if (this.myChart.width === 0) {
-				//console.log("updated(): chart is no visible!");
 				this.myChart.resize();
 			}
 		}
 
 		changedProperties.forEach((oldValue, propName) => {
-
 			// wanneer de kaart configuratie veranderd, zal _config veranderen
 			if (propName == "_config") {
 				this.makeGraph();
@@ -333,9 +271,7 @@ class CombiCard extends LitElement {
 				if (typeof oldValue != 'undefined') {
 					// when using single entity
 					if (this._config.entity) {
-						//console.log(this._config.entity);
 						if (this.hass.states[this._config.entity].attributes.data !== oldValue.states[this._config.entity].attributes.data) {
-							//console.log("data has changed, lets update")
 							this.updateGrafiek()
 						}
 					}
@@ -343,10 +279,7 @@ class CombiCard extends LitElement {
 					//when using multiple entities
 					if (this._config.entities) {
 						for (const entity of this._config.entities) {
-							//console.log(entity)
 							if (this.hass.states[entity].attributes.data !== oldValue.states[entity].attributes.data) {
-								//  console.log("data has changed, lets update")
-								//  console.log(entity)
 								this.updateGrafiek()
 							}
 						}
@@ -362,7 +295,6 @@ class CombiCard extends LitElement {
 		if(this.dontMakeGraph == true) {
 			return;
 		}
-
 
 		//https://stackoverflow.com/a/35663683/4181822
 		function hexify(color) {
@@ -409,11 +341,8 @@ class CombiCard extends LitElement {
 		var primaryTextColor = convertToHexIfNeeded(style.getPropertyValue('--primary-text-color'));
 		var secondaryTextColor = convertToHexIfNeeded(style.getPropertyValue('--secondary-text-color'));
 
-
-
 		// verwijder de kaart
 		if(this.myChart) {
-
 			this.myChart=null;
 			this.renderRoot.getElementById("neerslagChart").remove();
 			let canvas = document.createElement('canvas');
@@ -428,7 +357,6 @@ class CombiCard extends LitElement {
 			if (this.shadowRoot) {
 				ctx = this.shadowRoot.getElementById("neerslagChart").getContext('2d');
 			}
-			// this.myChart.options.transitions.active.animation.duration = 0
 
 			this.myChart = new Chart(ctx, {
 				type: 'line',
@@ -464,7 +392,6 @@ class CombiCard extends LitElement {
 						}
 					},
 					animation: false,
-					// animation: { easing: 'easeOutCirc', duration: 500},
 					interaction: {
 						intersect: false,
 						mode: 'index',
@@ -480,7 +407,7 @@ class CombiCard extends LitElement {
 							display: false,
 						},
 						tooltip: {
-							displayColors: false, //disable color boxes/legend
+							displayColors: false,
 							callbacks: {
 								label: function (context) {
 
@@ -505,7 +432,7 @@ class CombiCard extends LitElement {
 									type: 'line',
 									yMin: 5,
 									yMax: 5,
-									borderColor: 'grey', //'rgb(255, 99, 132)',
+									borderColor: 'grey',
 									borderWidth: 1,
 									label: {
 										enabled: true,
@@ -521,7 +448,7 @@ class CombiCard extends LitElement {
 									type: 'line',
 									yMin: 2,
 									yMax: 2,
-									borderColor: 'grey', //'rgb(255, 99, 132)',
+									borderColor: 'grey',
 									borderWidth: 1,
 									label: {
 										enabled: true,
@@ -537,7 +464,7 @@ class CombiCard extends LitElement {
 									type: 'line',
 									yMin: 0.4,
 									yMax: 0.4,
-									borderColor: 'grey', //'rgb(255, 99, 132)',
+									borderColor: 'grey',
 									borderWidth: 1,
 									label: {
 										enabled: true,
@@ -565,7 +492,7 @@ class CombiCard extends LitElement {
 							ctx.moveTo(x, yAxis.top);
 							ctx.lineTo(x, yAxis.bottom);
 							ctx.lineWidth = 1;
-							ctx.strokeStyle = 'rgba(190, 190, 190, 1)'; //rgba(0, 0, 255, 0.4)
+							ctx.strokeStyle = 'rgba(190, 190, 190, 1)';
 							ctx.stroke();
 							ctx.restore();
 						}
@@ -588,7 +515,6 @@ class CombiCard extends LitElement {
 	 * @param {*} vlabel = defineer de label van de dataset (NAAM)
 	 */
 	generateDatasetObject(data, vlabel = "Regen") {
-
 		// entities in card moet object worden
 		// dan is het - entity:
 		// https://www.home-assistant.io/lovelace/entities/
@@ -603,62 +529,38 @@ class CombiCard extends LitElement {
 
 		return {
 			label: vlabel,
-			data: data,
-			// backgroundColor: [
-			// 	'rgba(89, 160, 238, 0.2)'
-			// ],
-			// borderColor: [
-			// 	'rgba(89, 160, 238, 1)'
-			// ],
-			// borderWidth: 2
+			data: data
 		}
 	}
 
-	//sync buienradar en buienalarm
-	//beide zijn objecten dus wanneer deze worden aangepast, dan wijzigt het ook meteen
+	/**
+	 * Sync buienradar en buienalarm
+	 * beide zijn objecten dus wanneer deze worden aangepast, dan wijzigt het ook meteen.
+	 * Onderstaande functie werkt ook wanneer buienalarm in zijn dataset achterloopt
+	 */
 	combineTwoArray(array1, array2) {
-
 		// fix - if only 1 entity is used
 		if(!array1 || !array2) {
 			return;
 		}
 
-		//console.log(array1[0])
-		//console.log(array2[0])
-
 		if (!array2[0] || !array1[0]) {
 			return;
 		}
 
-		/**
-		 * wanneer buienalarm achterloopt in zijn geheel
-		 * werkt het onderstaande prima
-		 */
-
 		// fix dataset van array 2
 		for (const data of array1[0]) {
 			if (!array2[0].includes(data)) {
-				// console.log("1 waarde niet gevonden: " + data);
-
 				let index = array1[0].indexOf(data)
-				// console.log("1 waarde heeft index: " + index);
-				// console.log(array2[0])
-
 				array2[0].splice(index, 0, array1[0][index])
 				array2[1].splice(index, 0, '0')
 			}
 		}
 
-		// geen idee of dit gaat werken
 		// fix dataset van array 1
 		for (const data of array2[0]) {
 			if (!array1[0].includes(data)) {
-				// console.log("2 waarde niet gevonden: " + data);
-
 				let index = array2[0].indexOf(data)
-				// console.log("2 waarde heeft index: " + index);
-				// console.log(array1[0])
-
 				array1[0].splice(index, 0, array2[0][index])
 				array1[1].splice(index, 0, '0')
 			}
@@ -707,8 +609,6 @@ class CombiCard extends LitElement {
 	}
 
 	prepareData(data, entity) {
-
-		//console.log(this._config.entity);
 		if (!data || data.length === 0) {
 			return html``;
 		}
@@ -827,9 +727,6 @@ class CombiCard extends LitElement {
 			tijd.push(addZero(d.getHours()) + ":" + addZero(d.getMinutes()));
 		});
 
-		// console.log(tijd)
-		// console.log(rain);
-
 		let returnData = [];
 		returnData[0] = tijd;
 		returnData[1] = rain;
@@ -838,11 +735,6 @@ class CombiCard extends LitElement {
 	}
 
 	updateGrafiek() {
-
-		let chartData
-		let chartsDataAlsArray = []
-		let chartDatasets = []
-
 		if (this.dontMakeGraph === true) {
 			console.log('updateGrafiek - dontMakeGraph')
 			return;
@@ -853,7 +745,6 @@ class CombiCard extends LitElement {
 	}
 }
 
-// customElements.define("combi-card-editor", CombiCardEditor);
 customElements.define('neerslag-card', CombiCard);
 
 window.customCards = window.customCards || [];
