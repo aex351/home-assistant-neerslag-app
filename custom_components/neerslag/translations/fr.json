@@ -1,7 +1,7 @@
 {
     "config": {
         "abort": {
-            "already_configured": "L'appareil ets déjà configuré"
+            "already_configured": "L'appareil est déjà configuré"
         },
         "error": {
             "cannot_connect": "Impossible de se connecter",
@@ -42,7 +42,7 @@
                     "password": "Mot de Passe",
                     "username": "Nom d'utilisateur"
                 },
-                "description": "Les changements (après soumission) seront appliqués après quelques minutes.",
+                "description": "Les changements seront appliqués quelques minutes après soumission.",
                 "title": "Options de l'application Neerslag"
             }
         }
