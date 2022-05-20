@@ -4,14 +4,14 @@
             "already_configured": "L'appareil est déjà configuré"
         },
         "error": {
-            "cannot_connect": "Impossible de se connecter",
+            "cannot_connect": "Connection impossible",
             "invalid_auth": "Authentification invalide",
             "unknown": "Erreur inconnue"
         },
         "step": {
             "user": {
                 "data": {
-                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation (latitude/longitude) de Home Assistant (Outrepasse les autres paramètres de localisation)",
+                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation de Home Assistant (latitude/longitude ; outrepasse les autres paramètres de localisation)",
                     "buienalarm": "Activer Buienalarm",
                     "buienalarmLatitude": "Latitude",
                     "buienalarmLongitude": "Longitude",
@@ -31,7 +31,7 @@
         "step": {
             "init": {
                 "data": {
-                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation (latitude/longitude) de Home Assistant (Outrepasse les autres paramètres de localisation)",
+                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation de Home Assistant (latitude/longitude ; outrepasse les autres paramètres de localisation)",
                     "buienalarm": "Activer Buienalarm",
                     "buienalarmLatitude": "Latitude",
                     "buienalarmLongitude": "Longitude",
