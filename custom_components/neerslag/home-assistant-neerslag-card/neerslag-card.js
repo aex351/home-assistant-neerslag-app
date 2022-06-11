@@ -85,7 +85,7 @@ class CombiCard extends LitElement {
 			geenDataBeschikbaar: 'Geen sensor data beschikbaar',
 		},
 		en : {
-			regenMmUur : 'Rain (mm / hr)',
+			regenMmUur : 'Rain (mm / uur)',
 			regenvalVoorspelling : 'Rainfall forecast',
 			licht : 'Light',
 			matig : 'Moderate',
