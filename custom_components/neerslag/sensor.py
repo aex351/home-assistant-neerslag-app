@@ -40,8 +40,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     # entity_registry_obj = await hass.helpers.entity_registry.async_get_registry()
     # registry_entry = entity_registry_obj.async_get(config_entry.unique_id)
 
-    dev_reg = await hass.helpers.device_registry.async_get_registry()
-    ent_reg = await hass.helpers.entity_registry.async_get_registry()
+    dev_reg = hass.helpers.device_registry.async_get(hass)
+    ent_reg = hass.helpers.entity_registry.async_get(hass)
 
     # dds = async_get_platforms(hass, "neerslag")
     # _LOGGER.info(len(dds))
