@@ -65,15 +65,12 @@ class CombiCard extends LitElement {
 		this._config = config;
 
 		//default zoom waarde
-		this.zoomwaarde = 0.5;
+		this.zoomwaarde = 5.5;
 	}
 
 	getCardSize() {
 		return 2;
 	}
-
-
-
 
 	vertaling = {
 		nl : {
@@ -150,8 +147,8 @@ class CombiCard extends LitElement {
 			})
 		}
 
-		if (this._config.autozoom === false) {
-			this.zoomwaarde = 5.5;
+		if (this._config.autozoom === true) {
+			this.zoomwaarde = 0.5;
 		}
 
 		// Display "No Entity or Entities found card"
@@ -865,7 +862,7 @@ window.customCards.push({
 });
 
 console.info(
-	`%c NEERSLAG-CARD %c 2022.07.7.0`,
+	`%c NEERSLAG-CARD %c 2022.07.07.1`,
 	"Color: white; font-weight: bold; background: red;",
 	""
 );
