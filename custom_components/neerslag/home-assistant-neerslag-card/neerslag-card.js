@@ -88,6 +88,14 @@ class CombiCard extends LitElement {
 			matig : 'Moderate',
 			zwaar : 'Heavy',
 			geenDataBeschikbaar: 'No sensor data available',
+		},
+		fr : {
+			regenMmUur : 'Pluie (mm / h)',
+			regenvalVoorspelling : 'Prévision de précipitations',
+			licht : 'Légère',
+			matig : 'Moyenne',
+			zwaar : 'Forte',
+			geenDataBeschikbaar: 'Pas de données du senseur disponibles',
 		}
 	}
 
@@ -862,7 +870,7 @@ window.customCards.push({
 });
 
 console.info(
-	`%c NEERSLAG-CARD %c 2022.07.07.2`,
+	`%c NEERSLAG-CARD %c 2022.07.08.0`,
 	"Color: white; font-weight: bold; background: red;",
 	""
 );
