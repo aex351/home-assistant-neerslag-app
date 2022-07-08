@@ -82,7 +82,7 @@ class CombiCard extends LitElement {
 			geenDataBeschikbaar: 'Geen sensor data beschikbaar',
 		},
 		en : {
-			regenMmUur : 'Rain (mm / uur)',
+			regenMmUur : 'Rain (mm / hr)',
 			regenvalVoorspelling : 'Rainfall forecast',
 			licht : 'Light',
 			matig : 'Moderate',
@@ -862,7 +862,7 @@ window.customCards.push({
 });
 
 console.info(
-	`%c NEERSLAG-CARD %c 2022.07.07.1`,
+	`%c NEERSLAG-CARD %c 2022.07.07.2`,
 	"Color: white; font-weight: bold; background: red;",
 	""
 );
