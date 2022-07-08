@@ -1,0 +1,50 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "L'appareil est déjà configuré"
+        },
+        "error": {
+            "cannot_connect": "Connection impossible",
+            "invalid_auth": "Authentification invalide",
+            "unknown": "Erreur inconnue"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation de Home Assistant (latitude/longitude ; outrepasse les autres paramètres de localisation)",
+                    "buienalarm": "Activer Buienalarm",
+                    "buienalarmLatitude": "Latitude",
+                    "buienalarmLongitude": "Longitude",
+                    "buienradar": "Activer Buienradar",
+                    "buienradarLatitude": "Latitude",
+                    "buienradarLongitude": "Longitude",
+                    "host": "Hôte",
+                    "password": "Mot de Passe",
+                    "username": "Nom d'utilisateur"
+                },
+                "description": "Les senseurs peuvent prendre quelque minutes pour devenir actifs.",
+                "title": "Configuration de l'application Neerslag"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Utilisation des paramètres de localisation de Home Assistant (latitude/longitude ; outrepasse les autres paramètres de localisation)",
+                    "buienalarm": "Activer Buienalarm",
+                    "buienalarmLatitude": "Latitude",
+                    "buienalarmLongitude": "Longitude",
+                    "buienradar": "Activer Buienradar",
+                    "buienradarLatitude": "Latitude",
+                    "buienradarLongitude": "Longitude",
+                    "host": "Hôte",
+                    "password": "Mot de Passe",
+                    "username": "Nom d'utilisateur"
+                },
+                "description": "Les changements seront appliqués quelques minutes après soumission.",
+                "title": "Options de l'application Neerslag"
+            }
+        }
+    }
+}
