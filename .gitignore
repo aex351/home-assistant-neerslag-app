@@ -140,3 +140,19 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Additional
+.storage/
+www/
+blueprints/
+secrets.yaml
+scripts.yaml
+scenes.yaml
+home-assistant_v2.db
+home-assistant.log.1
+configuration.yaml
+automations.yaml
+.HA_VERSION
+home-assistant.log.fault
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
