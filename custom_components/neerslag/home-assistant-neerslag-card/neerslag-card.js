@@ -820,7 +820,7 @@ class CombiCard extends LitElement {
 		let rain = [];
 
 		data.precip.forEach(function (item, index) {
-			rain.push(item)
+			rain.push(parseFloat(Math.pow(10, (item - 109) / 32)).toFixed(2));
 		});
 
 
@@ -870,7 +870,7 @@ window.customCards.push({
 });
 
 console.info(
-	`%c NEERSLAG-CARD %c 2022.07.08.0`,
+	`%c NEERSLAG-CARD %c 2024.04.20.0`,
 	"Color: white; font-weight: bold; background: red;",
 	""
 );

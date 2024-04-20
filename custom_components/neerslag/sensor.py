@@ -260,7 +260,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
         try:
             timeout = aiohttp.ClientTimeout(total=5)
             async with aiohttp.ClientSession() as session:
-                url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&unit=mm%2Fu&c=' + str(rand.randint(0, 999999999999999))
+                url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&c=' + str(rand.randint(0, 999999999999999))
                 async with session.get(url, timeout=timeout) as response:
                     html = await response.text()
                     dataRequest = html.replace('\r\n', ' ')
