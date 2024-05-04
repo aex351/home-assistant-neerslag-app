@@ -331,7 +331,7 @@ class NeerslagSensorBuienradar(mijnBasis):
                 # _LOGGER.info(url)
                 async with session.get(url, timeout=timeout) as response:
                     html = await response.text()
-                    dataRequest = html.replace('\r\n', ' ')
+                    dataRequest = ' '.join(html.splitlines())
                     if dataRequest == "" :
                         dataRequest = ""
                     data = json.loads('{"data": "' + dataRequest + '"}')
