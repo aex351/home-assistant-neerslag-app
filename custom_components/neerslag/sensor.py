@@ -4,13 +4,12 @@ import logging
 from os import truncate
 import aiohttp
 
-from random import random
 import random as rand
 
 import json
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SOURCE
-from datetime import timedelta
+from datetime import timedelta, datetime, time, date
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import EntityPlatform, async_get_platforms
@@ -178,8 +177,18 @@ class mijnBasis(Entity):
         """Return unique ID."""
         return self._unique_id
 
+    def state_update(self):
+        precip = self._attrs["data"]["precip"]
+        nz = next((i for i, x in enumerate(precip) if x), None)
+        if nz is not None:
+            # Rain expected in self._state minutes
+            self._state = int(nz * self._attrs["data"]["delta"] / 60)
+        else:
+            self._state = nz
+        return
+
     async def async_update(self):
-        self._state = random()
+        self._state = None
         return True
 
 
@@ -216,7 +225,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
         super().__init__(hass=hass, config_entry=config_entry, enabled=enabled)
         self._name = "neerslag_buienalarm_regen_data"
         self._state = "working"  # None
-        self._attrs = ["data empty"]
+        self._attrs = {}
         self._unique_id = "neerslag-sensor-buienalarm-1"
 
         self._enabled = enabled
@@ -250,8 +259,8 @@ class NeerslagSensorBuienalarm(mijnBasis):
 
     async def async_update(self):
         if(self._enabled == True):
-            self._state = random()
             self._attrs = await self.getBuienalarmData()
+            self.state_update()
         return True
 
     async def getBuienalarmData(self) -> str:
@@ -282,7 +291,7 @@ class NeerslagSensorBuienradar(mijnBasis):
 
         self._name = "neerslag_buienradar_regen_data"
         self._state = "working"  # None
-        self._attrs = ["data empty"]
+        self._attrs = {"data": {}}
         self._unique_id = "neerslag-sensor-buienradar-1"
 
         self._enabled = enabled
@@ -316,8 +325,19 @@ class NeerslagSensorBuienradar(mijnBasis):
 
     async def async_update(self):
         if(self._enabled == True):
-            self._state = random()
             self._attrs = await self.getBuienradarData()
+            pt = [v.split('|') for v in self._attrs["received"].split(' ')]
+            precip, times = zip(*pt)
+            precip = [int(v) for v in precip]
+            t0 = datetime.combine(date.today(), time.fromisoformat(times[0]))
+            t1 = datetime.combine(date.today(), time.fromisoformat(times[1]))
+            self._attrs["data"] = {}
+            self._attrs["data"]["success"] = True
+            self._attrs["data"]["start"] = int(t0.timestamp())
+            self._attrs["data"]["start_human"] = times[0]
+            self._attrs["data"]["delta"] = int((t1 - t0).seconds)
+            self._attrs["data"]["precip"] = precip
+            self.state_update()
         return True
 
     async def getBuienradarData(self) -> str:
@@ -334,7 +354,7 @@ class NeerslagSensorBuienradar(mijnBasis):
                     dataRequest = ' '.join(html.splitlines())
                     if dataRequest == "" :
                         dataRequest = ""
-                    data = json.loads('{"data": "' + dataRequest + '"}')
+                    data = json.loads('{"received": "' + dataRequest + '"}')
                     # _LOGGER.info(data)
                     await session.close()
         except:
