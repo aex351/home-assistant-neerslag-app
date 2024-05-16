@@ -184,7 +184,7 @@ class mijnBasis(Entity):
             # Rain expected in self._state minutes
             self._state = int(nz * self._attrs["data"]["delta"] / 60)
         else:
-            self._state = nz
+            self._state = 24 * 60  # Large number (tomorrow), since 'None' translates to 'unknown'
         return
 
     async def async_update(self):
