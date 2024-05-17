@@ -164,18 +164,33 @@ class mijnBasis(Entity):
         """Return True if entity is available."""
         return self._enabled
 
-    @ property
+    @property
     def state(self):
         return self._state
 
-    @ property
+    @property
     def name(self):
         return self._name
 
-    @ property
+    @property
+    def icon(self):
+        return self._icon
+
+    @property
+    def unit_of_measurement(self):
+        return "min"
+
+    @property
     def unique_id(self):
         """Return unique ID."""
         return self._unique_id
+
+    @property
+    def state_attributes(self):
+        if not len(self._attrs):
+            return
+        return self._attrs
+        # return {"data": self._attrs}
 
     def state_update(self):
         precip = self._attrs["data"]["precip"]
@@ -246,17 +261,6 @@ class NeerslagSensorBuienalarm(mijnBasis):
         # self._entity_picture = "https://www.buienalarm.nl/assets/img/social.png"
         self._icon = "mdi:weather-cloudy"
 
-    @ property
-    def icon(self):
-        return self._icon
-
-    @ property
-    def state_attributes(self):
-        if not len(self._attrs):
-            return
-        return self._attrs
-        # return {"data": self._attrs}
-
     async def async_update(self):
         if(self._enabled == True):
             self._attrs = await self.getBuienalarmData()
@@ -311,17 +315,6 @@ class NeerslagSensorBuienradar(mijnBasis):
 
         # self._entity_picture = "https://cdn.buienradar.nl/resources/images/br-logo-square.png"
         self._icon = "mdi:weather-cloudy"
-
-    @ property
-    def icon(self):
-        return self._icon
-
-    @ property
-    def state_attributes(self):
-        if not len(self._attrs):
-            return
-        return self._attrs
-        # return {"data": self._attrs}
 
     async def async_update(self):
         if(self._enabled == True):
