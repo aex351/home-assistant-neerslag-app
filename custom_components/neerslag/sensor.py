@@ -192,16 +192,6 @@ class mijnBasis(Entity):
         return self._attrs
         # return {"data": self._attrs}
 
-    def state_update(self):
-        precip = self._attrs["data"]["precip"]
-        nz = next((i for i, x in enumerate(precip) if x), None)
-        if nz is not None:
-            # Rain expected in self._state minutes
-            self._state = int(nz * self._attrs["data"]["delta"] / 60)
-        else:
-            self._state = 24 * 60  # Large number (tomorrow), since 'None' translates to 'unknown'
-        return
-
     async def async_update(self):
         self._state = None
         return True
@@ -261,6 +251,17 @@ class NeerslagSensorBuienalarm(mijnBasis):
         # self._entity_picture = "https://www.buienalarm.nl/assets/img/social.png"
         self._icon = "mdi:weather-cloudy"
 
+    def state_update(self):
+        precip = self._attrs["data"]["precip"]
+        delta = self._attrs["data"]["delta"]
+        nz = next((i for i, x in enumerate(precip) if x), None)
+        if nz is not None:
+            # Rain expected in self._state minutes
+            self._state = int(nz * delta / 60)
+        else:
+            self._state = 24 * 60  # Large number (tomorrow), since 'None' translates to 'unknown'
+        return
+
     async def async_update(self):
         if(self._enabled == True):
             self._attrs = await self.getBuienalarmData()
@@ -316,20 +317,25 @@ class NeerslagSensorBuienradar(mijnBasis):
         # self._entity_picture = "https://cdn.buienradar.nl/resources/images/br-logo-square.png"
         self._icon = "mdi:weather-cloudy"
 
+    def state_update(self):
+        pt = [v.split('|') for v in self._attrs["data"].split(' ')]
+        precip, times = zip(*pt)
+        precip = [int(v) for v in precip]
+        t0 = datetime.combine(date.today(), time.fromisoformat(times[0]))
+        t1 = datetime.combine(date.today(), time.fromisoformat(times[1]))
+        delta = int((t1 - t0).seconds)
+
+        nz = next((i for i, x in enumerate(precip) if x), None)
+        if nz is not None:
+            # Rain expected in self._state minutes
+            self._state = int(nz * delta / 60)
+        else:
+            self._state = 24 * 60  # Large number (tomorrow), since 'None' translates to 'unknown'
+        return
+
     async def async_update(self):
         if(self._enabled == True):
             self._attrs = await self.getBuienradarData()
-            pt = [v.split('|') for v in self._attrs["received"].split(' ')]
-            precip, times = zip(*pt)
-            precip = [int(v) for v in precip]
-            t0 = datetime.combine(date.today(), time.fromisoformat(times[0]))
-            t1 = datetime.combine(date.today(), time.fromisoformat(times[1]))
-            self._attrs["data"] = {}
-            self._attrs["data"]["success"] = True
-            self._attrs["data"]["start"] = int(t0.timestamp())
-            self._attrs["data"]["start_human"] = times[0]
-            self._attrs["data"]["delta"] = int((t1 - t0).seconds)
-            self._attrs["data"]["precip"] = precip
             self.state_update()
         return True
 
@@ -347,7 +353,7 @@ class NeerslagSensorBuienradar(mijnBasis):
                     dataRequest = ' '.join(html.splitlines())
                     if dataRequest == "" :
                         dataRequest = ""
-                    data = json.loads('{"received": "' + dataRequest + '"}')
+                    data = json.loads('{"data": "' + dataRequest + '"}')
                     # _LOGGER.info(data)
                     await session.close()
         except:
