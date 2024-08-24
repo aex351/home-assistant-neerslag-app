@@ -29,7 +29,7 @@ async def options_update_listener(hass: HomeAssistant, config_entry: ConfigEntry
 async def async_setup(hass: HomeAssistant, config_entry: dict):
     """Set up the Neerslag Sensor (Buienalarm / Buienradar) component."""
     hass.data.setdefault(DOMAIN, {})
-    setup_view(hass)
+    await setup_view(hass)
 
     return True
 
