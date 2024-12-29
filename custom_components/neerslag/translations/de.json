@@ -1,0 +1,50 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Gerät ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindungsfehler",
+            "invalid_auth": "Authentifizierungsfehler",
+            "unknown": "unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Standorteinstellung (Koordinaten) von Home Assistant verwenden (überschreibt alle obigen Einstellungen)",
+                    "buienalarm": "Datenquelle \"Buienalarm\" einschalten",
+                    "buienalarmLatitude": "geografische Breite",
+                    "buienalarmLongitude": "geografische Länge",
+                    "buienradar": "Datenquelle \"Buienradar\" einschalten",
+                    "buienradarLatitude": "geografische Breite",
+                    "buienradarLongitude": "geografische Länge",
+                    "host": "Host",
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Es kann einige Minuten dauern, bevor die Sensoren eingerichtet werden.",
+                "title": "Einrichtung der Neerslag App"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "NeerslagSensorUseHAforLocation": "Standorteinstellung (Koordinaten) von Home Assistant verwenden (überschreibt alle obigen Einstellungen)",
+                    "buienalarm": "Datenquelle \"Buienalarm\" einschalten",
+                    "buienalarmLatitude": "geografische Breite",
+                    "buienalarmLongitude": "geografische Länge",
+                    "buienradar": "Datenquelle \"Buienradar\" einschalten",
+                    "buienradarLatitude": "geografische Breite",
+                    "buienradarLongitude": "geografische Länge",
+                    "host": "Host",
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Es kann einige Minuten dauern, bevor die Änderungen sichtbar werden.",
+                "title": "Optionen der Neerslag App"
+            }
+        }
+    }
+}
