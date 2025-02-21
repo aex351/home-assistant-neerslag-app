@@ -11,34 +11,48 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def setup_view(hass: HomeAssistant):
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    path_to_file = os.path.join(
-        dir_path,
-        "home-assistant-neerslag-card",
-        "neerslag-card.js",
-    )
-
-    should_cache = False
-
-    _LOGGER.debug(
-        "Neerslag frontend: registering static path %s -> %s",
-        FRONTEND_SCRIPT_URL,
-        path_to_file,
-    )
+    timestamp = str(time.time())
+    frontend_script_url_with_parameter = FRONTEND_SCRIPT_URL+"?cache="+timestamp
 
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(
                 FRONTEND_SCRIPT_URL,
-                path_to_file,
-                should_cache,
+                hass.config.path("custom_components/neerslag/home-assistant-neerslag-card/neerslag-card.js"),
+                True
             )
         ]
     )
+    add_extra_js_url(hass, frontend_script_url_with_parameter , es5=False)
 
-    add_extra_js_url(hass, FRONTEND_SCRIPT_URL, es5=False)
+    # Check if Neerslag Card is loaded in frontend, if not: add it again
+    resources = hass.data["lovelace"]["resources"]
+    if resources:
+        if not resources.loaded:
+            await resources.async_load()
+            resources.loaded = True
 
-    _LOGGER.debug(
-        "Neerslag frontend: registered extra JS module URL %s",
-        FRONTEND_SCRIPT_URL,
-    )
+        frontend_added = False
+        for r in resources.async_items():
+            if r["url"].startswith(FRONTEND_SCRIPT_URL):
+                frontend_added = True
+                continue
+
+        if not frontend_added:
+            if getattr(resources, "async_create_item", None):
+                await resources.async_create_item(
+                    {
+                        "res_type": "module",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added" + "&cache=" + timestamp,
+                    }
+                )
+            elif getattr(resources, "data", None) and getattr(
+                resources.data, "append", None
+            ):
+                resources.data.append(
+                    {
+                        "type": "module",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added" + "&cache=" + timestamp,
+
+                    }
+                )
