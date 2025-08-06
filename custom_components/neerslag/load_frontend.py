@@ -16,7 +16,9 @@ async def setup_view(hass: HomeAssistant):
     should_cache = False
 
     timestamp = str(time.time())
-    frontend_script_url_with_parameter = FRONTEND_SCRIPT_URL+"?cache="+timestamp
-    add_extra_js_url(hass, frontend_script_url_with_parameter , es5=False)
+    frontend_script_url_with_parameter = FRONTEND_SCRIPT_URL + "?cache=" + timestamp
+    add_extra_js_url(hass, frontend_script_url_with_parameter, es5=False)
 
-    await hass.http.async_register_static_paths([StaticPathConfig(FRONTEND_SCRIPT_URL, str(path_to_file), should_cache)])
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(FRONTEND_SCRIPT_URL, str(path_to_file), should_cache)]
+    )
