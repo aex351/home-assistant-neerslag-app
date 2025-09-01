@@ -157,7 +157,6 @@ class mijnBasis(Entity):
             "manufacturer": "aex351",
             "model": "All-in-one package",
             "sw_version": "",
-            "via_device": ("neerslag", "abcd"),
         }
 
     @property
