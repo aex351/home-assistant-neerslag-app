@@ -58,6 +58,8 @@ class mijnBasis(Entity):
     _enabled = None
     _unique_id = None
     _name = None
+    _icon = None
+    _attrs = None
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, enabled: bool):
         _LOGGER.info(
@@ -88,7 +90,7 @@ class mijnBasis(Entity):
             "manufacturer": "aex351",
             "model": "All-in-one package",
             "sw_version": "",
-            "via_device": ("neerslag", "abcd"),
+            # "via_device": ("neerslag", "abcd"),
         }
 
     @property
@@ -119,8 +121,6 @@ class mijnBasis(Entity):
 
     @property
     def state_attributes(self):
-        if not len(self._attrs):
-            return
         return self._attrs
 
 
