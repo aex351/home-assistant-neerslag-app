@@ -156,11 +156,14 @@ class NeerslagSensorBuienalarm(mijnBasis):
             precip = self._attrs["data"]["precip"]
             delta = self._attrs["data"]["delta"]
         except KeyError:
-            if last_update > 2 * 60 and last_update < 2 * 60 + 20:
+            assume_raining = 30  # 2 * 60 is after 2hrs
+            if last_update > assume_raining and last_update < assume_raining + 20:
                 # Assume it's raining after losing connection for more than 2 hrs.
-                _LOGGER.warning("getBuienalarmData lost connection for more than 2 hrs")
+                _LOGGER.warning(
+                    f"getBuienalarmData lost connection for more {assume_raining} min"
+                )
                 self._state = 0
-                return
+            return
 
         self._attrs["updated"] = int(datetime.now().timestamp())
         nz = next((i for i, x in enumerate(precip) if x), None)
@@ -233,14 +236,19 @@ class NeerslagSensorBuienradar(mijnBasis):
         last_update = int(datetime.now().timestamp()) - self._attrs["updated"]
 
         pt = [v.split("|") for v in self._attrs["data"].split(" ")]
-        if (
-            not pt and last_update > 2 * 60 and last_update < 2 * 60 + 20
-        ):  # No data received
-            # Assume it's raining after losing connection for more than 2 hrs.
-            _LOGGER.warning("getBuienradarData lost connection for more than 2 hrs")
-            self._state = 0
+        try:
+            precip, times = zip(*pt)
+        except ValueError as e:
+            assume_raining = 30
+            if (
+                last_update > assume_raining and last_update < assume_raining + 20
+            ):  # No data received
+                # Assume it's raining after losing connection for more than 2 hrs.
+                _LOGGER.warning(
+                    f"getBuienradarData lost connection for more than {assume_raining} min"
+                )
+                self._state = 0
             return
-        precip, times = zip(*pt)
         precip = [int(v) for v in precip]
         t0 = datetime.combine(date.today(), time.fromisoformat(times[0]))
         t1 = datetime.combine(date.today(), time.fromisoformat(times[1]))
