@@ -7,6 +7,8 @@ import aiohttp
 from random import random
 import random as rand
 
+import math
+
 import json
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SOURCE
@@ -310,6 +312,22 @@ class NeerslagSensorBuienalarm(mijnBasis):
                             diff = t1 - t0
                             if diff > 0:
                                 old["delta"] = diff  # default wordt overschreven
+                    
+                    # --- PRECIP (mm/h → code 0..255) ---
+                    precip_codes = []
+                    for item in timeseries:
+                        rate = item.get("precipitationrate", 0.0)  # mm/uur (waarschijnlijk)
+
+                        if rate <= 0:
+                            code = 0
+                        else:
+                            code = 32 * math.log10(rate) + 109
+                            code = round(code)
+                            code = max(0, min(255, code))  # clamp
+
+                        precip_codes.append(code)
+
+                    old["precip"] = precip_codes
 
         except Exception:
             _LOGGER.info("getBuienalarmData - timeout")
