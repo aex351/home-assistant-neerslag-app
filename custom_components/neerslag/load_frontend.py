@@ -12,11 +12,33 @@ _LOGGER = logging.getLogger(__name__)
 
 async def setup_view(hass: HomeAssistant):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    path_to_file = "{}/home-assistant-neerslag-card/neerslag-card.js".format(dir_path)
+    path_to_file = os.path.join(
+        dir_path,
+        "home-assistant-neerslag-card",
+        "neerslag-card.js",
+    )
+
     should_cache = False
 
-    timestamp = str(time.time())
-    frontend_script_url_with_parameter = FRONTEND_SCRIPT_URL+"?cache="+timestamp
-    add_extra_js_url(hass, frontend_script_url_with_parameter , es5=False)
+    _LOGGER.debug(
+        "Neerslag frontend: registering static path %s -> %s",
+        FRONTEND_SCRIPT_URL,
+        path_to_file,
+    )
 
-    await hass.http.async_register_static_paths([StaticPathConfig(FRONTEND_SCRIPT_URL, str(path_to_file), should_cache)])
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                FRONTEND_SCRIPT_URL,
+                path_to_file,
+                should_cache,
+            )
+        ]
+    )
+
+    add_extra_js_url(hass, FRONTEND_SCRIPT_URL, es5=False)
+
+    _LOGGER.debug(
+        "Neerslag frontend: registered extra JS module URL %s",
+        FRONTEND_SCRIPT_URL,
+    )
