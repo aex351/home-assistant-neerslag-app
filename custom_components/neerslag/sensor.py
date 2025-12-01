@@ -254,22 +254,64 @@ class NeerslagSensorBuienalarm(mijnBasis):
             self._attrs = await self.getBuienalarmData()
         return True
 
-    async def getBuienalarmData(self) -> str:
-        data = json.loads('{"data":""}')
-        # return data
+    async def getBuienalarmData(self):
+        # Oude structuur
+        data = {
+            "data": {
+                "success": False,
+                "start": None,
+                "delta": 0,
+                "precip": [],
+            }
+        }
+
         try:
             timeout = aiohttp.ClientTimeout(total=5)
             async with aiohttp.ClientSession() as session:
-                url = 'https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat=' + self._lat + '&lon=' + self._lon + '&region=nl&c=' + str(rand.randint(0, 999999999999999))
+                url = (
+                    "https://imn-rust-lb.infoplaza.io/v4/nowcast/ba/timeseries/"
+                    + self._lat + "/" + self._lon
+                    + "/?c=" + str(rand.randint(0, 999999999999999))
+                )
+
                 async with session.get(url, timeout=timeout) as response:
-                    html = await response.text()
-                    dataRequest = html.replace('\r\n', ' ')
-                    if dataRequest == "" :
-                        dataRequest = ""
-                    data = json.loads('{"data":' + dataRequest + '}')
-                    # _LOGGER.info(data)
-                    await session.close()
-        except:
+                    raw = await response.text()
+                    raw = raw.replace("\r\n", " ")
+
+                    if not raw.strip():
+                        return data
+
+                    new_json = json.loads(raw)
+
+                    timeseries = new_json.get("data", [])
+                    summary = new_json.get("summary", {})
+
+                    old = data["data"]
+                    old["success"] = True
+
+                    # START: uit summary.timestamp (of fallback)
+                    start_ts = summary.get("timestamp")
+                    if start_ts is None and timeseries:
+                        start_ts = timeseries[0].get("timestamp")
+                    old["start"] = start_ts
+
+                    # PRECIP-array
+                    old["precip"] = [
+                        item.get("precipitationrate", 0)
+                        for item in timeseries
+                    ]
+
+                    # DELTA: interval tussen eerste twee timestamps
+                    if len(timeseries) >= 2:
+                        t0 = timeseries[0].get("timestamp")
+                        t1 = timeseries[1].get("timestamp")
+
+                        if isinstance(t0, int) and isinstance(t1, int):
+                            diff = t1 - t0
+                            if diff > 0:
+                                old["delta"] = diff  # default wordt overschreven
+
+        except Exception:
             _LOGGER.info("getBuienalarmData - timeout")
             pass
 
