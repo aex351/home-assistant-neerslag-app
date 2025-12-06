@@ -11,7 +11,7 @@
         "step": {
             "user": {
                 "data": {
-                    "NeerslagSensorUseHAforLocation": "Gebruik de locatie instellingen (latitude/longitude) van Home Assistant (deze optie overschrijft de andere locatie instellingen)",
+                    "NeerslagSensorUseHAforLocation": "Gebruik de locatie-instellingen (latitude/longitude) van Home Assistant (deze optie overschrijft de andere locatie-instellingen)",
                     "buienalarm": "Activeer Buienalarm",
                     "buienalarmLatitude": "Latitude",
                     "buienalarmLongitude": "Longitude",
@@ -31,7 +31,7 @@
         "step": {
             "init": {
                 "data": {
-                    "NeerslagSensorUseHAforLocation": "Gebruik de locatie instellingen (latitude/longitude) van Home Assistant (deze optie overschrijft de andere locatie instellingen)",
+                    "NeerslagSensorUseHAforLocation": "Gebruik de locatie-instellingen (latitude/longitude) van Home Assistant (deze optie overschrijft de andere locatie-instellingen)",
                     "buienalarm": "Activeer Buienalarm",
                     "buienalarmLatitude": "Latitude",
                     "buienalarmLongitude": "Longitude",
