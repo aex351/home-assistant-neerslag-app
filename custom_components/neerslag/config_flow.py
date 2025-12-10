@@ -4,6 +4,8 @@ import logging
 import voluptuous as vol
 from homeassistant.core import callback
 from homeassistant import config_entries, core, exceptions
+from homeassistant.config_entries import ConfigEntry
+
 
 from .const import DOMAIN  # pylint:disable=unused-import
 
@@ -103,15 +105,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
-        """Get the options flow for this handler."""
-        return OptionsFlowHandler(config_entry)
+    def async_get_options_flow(config_entry: ConfigEntry) -> config_entries.OptionsFlow:
+        """Create the options flow."""
+        return OptionsFlowHandler()
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle Neerslag options."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
+    def __init__(self) -> None:
+        """Initialize options flow."""
+        # eigen state kun je die hier initialiseren
+        pass
 
     async def async_step_init(self, user_input=None):
 

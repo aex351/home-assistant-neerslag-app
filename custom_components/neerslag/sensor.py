@@ -1,24 +1,17 @@
-from homeassistant.block_async_io import enable
-from homeassistant.helpers.entity_platform import EntityPlatform
+from __future__ import annotations
+
 import logging
-from os import truncate
-import aiohttp
-
-import random as rand
-
+import math
 import json
+from datetime import timedelta
+from random import random
+import random as rand
+from typing import Any
+
+import aiohttp
 from homeassistant.helpers.entity import Entity
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SOURCE
-from datetime import timedelta, datetime, time, date
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import EntityPlatform, async_get_platforms
-
-
-from homeassistant.helpers.entity_registry import (
-    async_entries_for_config_entry,
-    async_entries_for_device,
-)
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,42 +24,30 @@ async def async_setup_entry(
 ):
     """Set up sensor entity."""
 
-    if config_entry.data.get("buienalarm") == True:
-        async_add_entities(
-            [NeerslagSensorBuienalarm(hass, config_entry, True)], update_before_add=True
-        )
+    # Buienalarm – altijd entity registreren, enabled via checkbox
+    buienalarm_enabled = bool(config_entry.data.get("buienalarm", False))
+    async_add_entities(
+        [NeerslagSensorBuienalarm(hass, config_entry, buienalarm_enabled)],
+        update_before_add=buienalarm_enabled,
+    )
 
-    if config_entry.data.get("buienalarm") == False:
-        async_add_entities(
-            [NeerslagSensorBuienalarm(hass, config_entry, False)],
-            update_before_add=False,
-        )
-
-    if config_entry.data.get("buienradar") == True:
-        async_add_entities(
-            [NeerslagSensorBuienradar(hass, config_entry, True)], update_before_add=True
-        )
-
-    if config_entry.data.get("buienradar") == False:
-        async_add_entities(
-            [NeerslagSensorBuienradar(hass, config_entry, False)],
-            update_before_add=False,
-        )
+    # Buienradar – idem
+    buienradar_enabled = bool(config_entry.data.get("buienradar", False))
+    async_add_entities(
+        [NeerslagSensorBuienradar(hass, config_entry, buienradar_enabled)],
+        update_before_add=buienradar_enabled,
+    )
 
 
 class mijnBasis(Entity):
-    _enabled = None
-    _unique_id = None
-    _name = None
-    _icon = None
-    _attrs = None
+    _enabled: bool
+    _unique_id: str | None
+    _name: str | None
+    _lat: float
+    _lon: float
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, enabled: bool):
-        _LOGGER.info(
-            "--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>--->>>>>>>>>>>>>>>>>>>>>>>>"
-        )
-        # self._enabled = enabled
-        # config_entry.add_update_listener(self.mine_update_listener)
+        _LOGGER.info("Neerslag entity geladen")
 
     async def mine_update_listener(
         self, hass: HomeAssistant, config_entry: ConfigEntry, pp=None
@@ -74,10 +55,10 @@ class mijnBasis(Entity):
         """Handle options update."""
 
         if self._name == "neerslag_buienalarm_regen_data":
-            self._enabled = config_entry.data.get("buienalarm")
+            self._enabled = bool(config_entry.data.get("buienalarm"))
 
         if self._name == "neerslag_buienradar_regen_data":
-            self._enabled = config_entry.data.get("buienradar")
+            self._enabled = bool(config_entry.data.get("buienradar"))
 
     @property
     def device_info(self):
@@ -90,7 +71,6 @@ class mijnBasis(Entity):
             "manufacturer": "aex351",
             "model": "All-in-one package",
             "sw_version": "",
-            # "via_device": ("neerslag", "abcd"),
         }
 
     @property
@@ -127,6 +107,7 @@ class mijnBasis(Entity):
 class NeerslagSensorBuienalarm(mijnBasis):
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, enabled: bool):
         super().__init__(hass=hass, config_entry=config_entry, enabled=enabled)
+
         self._name = "neerslag_buienalarm_regen_data"
         self._state = 0
         self._attrs = {"updated": 0}  # in epoch secs
@@ -136,16 +117,16 @@ class NeerslagSensorBuienalarm(mijnBasis):
         config_entry.add_update_listener(self.mine_update_listener)
 
         if config_entry.data.get("NeerslagSensorUseHAforLocation"):
-            self._lat = hass.config.latitude
-            self._lon = hass.config.longitude
+            self._lat = float(hass.config.latitude)
+            self._lon = float(hass.config.longitude)
 
         else:
-            self._lat = config_entry.data.get("buienalarmLatitude")
-            self._lon = config_entry.data.get("buienalarmLongitude")
+            self._lat = float(config_entry.data.get("buienalarmLatitude") or 0.0)
+            self._lon = float(config_entry.data.get("buienalarmLongitude") or 0.0)
 
         # format values, enforce 3 decimals
-        self._lat = f"{float(self._lat):.3f}"
-        self._lon = f"{float(self._lon):.3f}"
+        self._lat = float(f"{float(self._lat):.3f}" or 0.0)
+        self._lon = float(f"{float(self._lon):.3f}" or 0.0)
 
         # self._entity_picture = "https://www.buienalarm.nl/assets/img/social.png"
         self._icon = "mdi:weather-cloudy"
@@ -182,26 +163,86 @@ class NeerslagSensorBuienalarm(mijnBasis):
         return True
 
     async def getBuienalarmData(self) -> str:
+        # Oude structuur
+        data = {
+            "data": {
+                "success": False,
+                "start": None,
+                "delta": 0,
+                "precip": [],
+            }
+        }
+
         try:
             timeout = aiohttp.ClientTimeout(total=5)
             async with aiohttp.ClientSession() as session:
                 url = (
-                    "https://cdn-secure.buienalarm.nl/api/3.4/forecast.php?lat="
-                    + self._lat
-                    + "&lon="
-                    + self._lon
-                    + "&region=nl&c="
+                    "https://imn-rust-lb.infoplaza.io/v4/nowcast/ba/timeseries/"
+                    + str(self._lat)
+                    + "/"
+                    + str(self._lon)
+                    + "/?c="
                     + str(rand.randint(0, 999999999999999))
                 )
+
                 async with session.get(url, timeout=timeout) as response:
-                    html = await response.text()
-                    dataRequest = html.replace("\r\n", " ")
-                    data = json.loads(dataRequest)
-                    # _LOGGER.info(data)
-                    await session.close()
-        except Exception as e:  # aiohttp.ConnectionTimeoutError
-            _LOGGER.info("getBuienalarmData - timeout  {e}")
-            data = {}
+                    raw = await response.text()
+                    raw = raw.replace("\r\n", " ")
+
+                    if not raw.strip():
+                        return data
+
+                    new_json = json.loads(raw)
+
+                    timeseries = new_json.get("data", [])
+                    summary = new_json.get("summary", {})
+
+                    old = data["data"]
+                    old["success"] = True
+
+                    # START: uit summary.timestamp (of fallback)
+                    start_ts = summary.get("timestamp")
+                    if start_ts is None and timeseries:
+                        start_ts = timeseries[0].get("timestamp")
+                    old["start"] = start_ts
+
+                    # PRECIP-array
+                    old["precip"] = [
+                        item.get("precipitationrate", 0) for item in timeseries
+                    ]
+
+                    # DELTA: interval tussen eerste twee timestamps
+                    if len(timeseries) >= 2:
+                        t0 = timeseries[0].get("timestamp")
+                        t1 = timeseries[1].get("timestamp")
+
+                        if isinstance(t0, int) and isinstance(t1, int):
+                            diff = t1 - t0
+                            if diff > 0:
+                                old["delta"] = diff  # default wordt overschreven
+
+                    # --- PRECIP (mm/h → code 0..255) ---
+                    precip_codes = []
+                    for item in timeseries:
+                        rate = item.get(
+                            "precipitationrate", 0.0
+                        )  # mm/uur (waarschijnlijk)
+
+                        if rate <= 0:
+                            code = 0
+                        else:
+                            code = 32 * math.log10(rate) + 109
+                            code = round(code)
+                            code = max(0, min(255, code))  # clamp
+
+                        precip_codes.append(code)
+
+                    old["precip"] = precip_codes
+
+        except Exception:
+            _LOGGER.info("getBuienalarmData - timeout")
+            pass
+
         return data
 
 
@@ -222,12 +263,12 @@ class NeerslagSensorBuienradar(mijnBasis):
             self._lon = hass.config.longitude
 
         else:
-            self._lat = config_entry.data.get("buienradarLatitude")
-            self._lon = config_entry.data.get("buienradarLongitude")
+            self._lat = float(config_entry.data.get("buienradarLatitude") or 0.0)
+            self._lon = float(config_entry.data.get("buienradarLongitude") or 0.0)
 
         # format values, enforce 2 decimals
-        self._lat = f"{float(self._lat):.2f}"
-        self._lon = f"{float(self._lon):.2f}"
+        self._lat = float(f"{float(self._lat):.2f}" or 0.0)
+        self._lon = float(f"{float(self._lon):.2f}" or 0.0)
 
         # self._entity_picture = "https://cdn.buienradar.nl/resources/images/br-logo-square.png"
         self._icon = "mdi:weather-cloudy"
