@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import math
 import json
-from datetime import timedelta
+from datetime import timedelta, datetime, time, date
 from random import random
 import random as rand
 from typing import Any
@@ -134,8 +134,8 @@ class NeerslagSensorBuienalarm(mijnBasis):
     def state_update(self):
         last_update = int(datetime.now().timestamp()) - self._attrs["updated"]
         try:
-            precip = self._attrs["data"]["precip"]
-            delta = self._attrs["data"]["delta"]
+            precip = self._attrs["data"]["data"]["precip"]
+            delta = self._attrs["data"]["data"]["delta"]
         except KeyError:
             assume_raining = 30  # 2 * 60 is after 2hrs
             if last_update > assume_raining and last_update < assume_raining + 20:
@@ -144,7 +144,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
                     f"getBuienalarmData lost connection for more {assume_raining} min"
                 )
                 self._state = 0
-            return
+            return False
 
         self._attrs["updated"] = int(datetime.now().timestamp())
         nz = next((i for i, x in enumerate(precip) if x), None)
@@ -154,12 +154,12 @@ class NeerslagSensorBuienalarm(mijnBasis):
         else:
             # None translates to "unknown", so make it next week
             self._state = 7 * 24 * 60
-        return
+        return True
 
     async def async_update(self):
         if self._enabled:
             self._attrs["data"] = await self.getBuienalarmData()
-            self.state_update()
+            return self.state_update()
         return True
 
     async def getBuienalarmData(self) -> str:
@@ -289,7 +289,7 @@ class NeerslagSensorBuienradar(mijnBasis):
                     f"getBuienradarData lost connection for more than {assume_raining} min"
                 )
                 self._state = 0
-            return
+            return False
         precip = [int(v) for v in precip]
         t0 = datetime.combine(date.today(), time.fromisoformat(times[0]))
         t1 = datetime.combine(date.today(), time.fromisoformat(times[1]))
@@ -303,12 +303,12 @@ class NeerslagSensorBuienradar(mijnBasis):
         else:
             # None translates to "unknown", so make it next week
             self._state = 7 * 24 * 60
-        return
+        return True
 
     async def async_update(self):
         if self._enabled:
             self._attrs["data"] = await self.getBuienradarData()
-            self.state_update()
+            return self.state_update()
         return True
 
     async def getBuienradarData(self) -> str:
@@ -318,9 +318,9 @@ class NeerslagSensorBuienradar(mijnBasis):
                 # https://www.buienradar.nl/overbuienradar/gratis-weerdata
                 url = (
                     "https://gps.buienradar.nl/getrr.php?lat="
-                    + self._lat
+                    + str(self._lat)
                     + "&lon="
-                    + self._lon
+                    + str(self._lon)
                     + "&c="
                     + str(rand.randint(0, 999999999999999))
                 )
@@ -331,6 +331,6 @@ class NeerslagSensorBuienradar(mijnBasis):
                     # _LOGGER.info(data)
                     await session.close()
         except Exception as e:  # aiohttp.ConnectionTimeoutError
-            _LOGGER.info(f"getBuienalarmData - timeout  {e}")
+            _LOGGER.info(f"getBuienradarData - timeout  {e}")
             data = ""
         return data
