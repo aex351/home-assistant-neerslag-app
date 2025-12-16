@@ -165,12 +165,10 @@ class NeerslagSensorBuienalarm(mijnBasis):
     async def getBuienalarmData(self) -> str:
         # Oude structuur
         data = {
-            "data": {
-                "success": False,
-                "start": None,
-                "delta": 0,
-                "precip": [],
-            }
+            "success": False,
+            "start": None,
+            "delta": 0,
+            "precip": [],
         }
 
         try:
@@ -197,7 +195,7 @@ class NeerslagSensorBuienalarm(mijnBasis):
                     timeseries = new_json.get("data", [])
                     summary = new_json.get("summary", {})
 
-                    old = data["data"]
+                    old = data
                     old["success"] = True
 
                     # START: uit summary.timestamp (of fallback)
