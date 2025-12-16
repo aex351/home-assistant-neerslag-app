@@ -134,8 +134,8 @@ class NeerslagSensorBuienalarm(mijnBasis):
     def state_update(self):
         last_update = int(datetime.now().timestamp()) - self._attrs["updated"]
         try:
-            precip = self._attrs["data"]["data"]["precip"]
-            delta = self._attrs["data"]["data"]["delta"]
+            precip = self._attrs["data"]["precip"]
+            delta = self._attrs["data"]["delta"]
         except KeyError:
             assume_raining = 30  # 2 * 60 is after 2hrs
             if last_update > assume_raining and last_update < assume_raining + 20:
